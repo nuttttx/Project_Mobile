@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Login.route
+        startDestination = Screen2.Home.route
 
     ) {
         composable(route = Screen.Login.route) { navBackStackEntry ->
