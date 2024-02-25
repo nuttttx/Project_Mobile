@@ -81,7 +81,7 @@ fun ProfileScreen(navController: NavHostController) {
     var commentDialog by remember { mutableStateOf(false) }
     var logoutDialog by remember { mutableStateOf(false) }
     var favorite by remember { mutableStateOf(false) }
-//    val contextForToast = LocalContext.current
+
     var checkedState by remember { mutableStateOf(false) }
 
 
@@ -274,7 +274,7 @@ fun ProfileScreen(navController: NavHostController) {
 
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 90.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
 //            verticalAlignment = Alignment.Top
         ) {
@@ -326,60 +326,7 @@ fun ProfileScreen(navController: NavHostController) {
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            // ปุ่มดรอปดาว (ปุ่มแก้ไขและลบ)
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(Color.Transparent)
-                                    .clickable { expanded = true }
-                            ) {
-                                IconButton(onClick = {
-                                    expanded = true
-                                }) {
-                                    Icon(
-                                        Icons.Filled.MoreVert,
-                                        contentDescription = "Options",
-                                        tint = Color.Gray
-                                    )
-                                }
 
-
-                                DropdownMenu(
-                                    modifier = Modifier.background(Color.White),
-                                    expanded = expanded,
-                                    onDismissRequest = { expanded = false },
-                                ) {
-                                    // Menu items
-                                    DropdownMenuItem(
-                                        text = { Text("แก้ไขโพสต์") },
-                                        onClick = {
-//                                            Toast.makeText(contextForToast, "Settings", Toast.LENGTH_SHORT).show()
-                                            expanded = false
-                                        },
-//                                        leadingIcon = {
-//                                            Icon(
-//                                                Icons.Outlined.Settings,
-//                                                contentDescription = null
-//                                            )
-//
-//                                        }
-                                    )
-                                    DropdownMenuItem(
-                                        text = { Text("ลบโพสต์") },
-                                        onClick = {
-//                                            Toast.makeText(contextForToast, "Logout", Toast.LENGTH_SHORT).show()
-                                            expanded = false
-                                        },
-//                                        leadingIcon = {
-//                                            Icon(
-//                                                Icons.Outlined.Logout,
-//                                                contentDescription = null
-//                                            )
-//                                        }
-                                    )
-                                }
-                            }
                         }
 
 

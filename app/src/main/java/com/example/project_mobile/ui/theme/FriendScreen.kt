@@ -102,7 +102,7 @@ fun FriendScreen(navController: NavHostController) {
 
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(bottom = 90.dp),
         ) {
             items(5) { index ->
                 // Create layout for each post
@@ -132,7 +132,7 @@ fun FriendScreen(navController: NavHostController) {
                         )
 
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(10.dp))
 
 
                         // Text content
@@ -149,7 +149,7 @@ fun FriendScreen(navController: NavHostController) {
                                 color = Color.Black
                             )
                         }
-                        Spacer(modifier = Modifier.width(100.dp))
+                        Spacer(modifier = Modifier.width(10.dp))
                         Button(
                             onClick = {
                                 // Perform delete action

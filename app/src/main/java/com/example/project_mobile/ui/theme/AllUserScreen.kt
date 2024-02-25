@@ -8,14 +8,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -41,14 +46,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.sql.Timestamp
 
+//เอาไว้ค้นหาเพื่อนได้
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllUserClass(navController: NavHostController) {
+fun AllUserScreen(navController: NavHostController) {
     val createClient = ChitChatAPI.create()
     var UserItemsList = remember { mutableStateListOf<AllUserClass>() }
     val contextForToast = LocalContext.current.applicationContext
-//    var textFildeID by remember { mutableStateOf("") }
+    var textFildeID by remember { mutableStateOf("") }
 
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -92,30 +98,31 @@ fun AllUserClass(navController: NavHostController) {
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
-        ){
-//            Text(
-//                text = "Search:",
-//                fontSize = 20.sp
-//            )
-//
-//            OutlinedTextField(
-//                modifier = Modifier
-//                    .width(230.dp)
-//                    .padding(10.dp),
-//                value = textFildeID,
-//                onValueChange = {textFildeID = it},
-//                label = { Text("Student ID") }
-//            )
-//
-//            Button(onClick = {
-//                if(textFildeID.trim().isEmpty()){
-//                    showAllData(studentItemsList, contextForToast)
-//                }
-//
-//            })
-//            {
-//                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-//            }
+        )
+        {
+            Text(
+                text = "Search:",
+                fontSize = 20.sp
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .width(230.dp)
+                    .padding(10.dp),
+                value = textFildeID,
+                onValueChange = {textFildeID = it},
+                label = { Text("Student ID") }
+            )
+
+            Button(onClick = {
+                if(textFildeID.trim().isEmpty()){
+                    showAllData(UserItemsList, contextForToast)
+                }
+
+            })
+            {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+            }
         }
 
         Row(
@@ -147,7 +154,7 @@ fun AllUserClass(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
 //            var itemClick = AllUserClass("", "", "", "")
-            var itemClick = AllUserClass(0, "", "", "", "", "", Timestamp(0), Timestamp(0), Timestamp(0))
+            var itemClick = AllUserClass(0, "", "", "", "", "", Timestamp(0), Timestamp(0), 0)
             itemsIndexed(
                 items = UserItemsList
             ) { index, item ->
@@ -181,10 +188,11 @@ fun AllUserClass(navController: NavHostController) {
 
                     ) {
                         Text(
-                            text = "ID: ${item.user_id}\n" +
+                            text =
+//                            "ID: ${item.user_id}\n" +
                                     "Name: ${item.user_name}\n" +
                                     "Email: ${item.email}\n" +
-                                    "Password: ${item.password}\n" +
+//                                    "Password: ${item.password}\n" +
                                     "Image: ${item.img}\n" +
                                     "Gender: ${item.gender}\n"
 //                                    "Role: ${item.role}"
@@ -219,18 +227,23 @@ fun AllUserClass(navController: NavHostController) {
     }
 }
 
-fun showAllData(studentItemsList: MutableList<AllUserClass>, context: Context) {
+fun showAllData(userItemsList: MutableList<AllUserClass>, context: Context) {
     val createClient =  ChitChatAPI.create()
-    createClient.retrieveUser().enqueue(object : Callback<List<AllUserClass>> {
-        override fun onResponse(call: Call<List<AllUserClass>>, response: Response<List<AllUserClass>>) {
-            studentItemsList.clear()
-            response.body()?.forEach {
-                studentItemsList.add(AllUserClass(it.user_id, it.user_name, it.email, it.password,it.img,it.gender,  it.create_at, it.update_at, it.delete_at))
-            }
+    createClient.retrieveUser()
+        .enqueue(object : Callback<List<AllUserClass>>
+        {
+            override fun onResponse(call: Call<List<AllUserClass>>, response: Response<List<AllUserClass>>) {
+                userItemsList.clear()
+                println(response.body())
+                response.body()?.forEach {
+                    userItemsList.add(AllUserClass(it.user_id, it.user_name, it.email, it.password,it.img,it.gender,  it.create_at, it.update_at, it.delete_at))
+                }
         }
 
         override fun onFailure(call: Call<List<AllUserClass>>, t: Throwable) {
+            println(t.message)
             Toast.makeText(context, "Error onFailure: " + t.message, Toast.LENGTH_LONG).show()
         }
     })
 }
+

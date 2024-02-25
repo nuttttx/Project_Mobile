@@ -11,9 +11,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class Screen2(val route: String, val name: String, val icon: ImageVector) {
     object Home : Screen2(route = "home_screen", name = "หน้าหลัก", icon = Icons.Default.Home)
     object Friend : Screen2(route = "friend_screen", name = "เพื่อน", icon = Icons.Default.AccountBox)
-    object Add : Screen2(route = "add_screen", name = "เพิ่ม", icon = Icons.Default.AddCircle)
+    object AddPost : Screen2(route = "add_screen", name = "เพิ่ม", icon = Icons.Default.AddCircle)
     object Notification : Screen2(route = "notification_screen", name = "แจ้งเตือน", icon = Icons.Default.Notifications)
     object Profile : Screen2(route = "profile_screen", name = "บัญชี", icon = Icons.Default.Person)
+
+
+
 
 
 }

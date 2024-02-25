@@ -1,5 +1,6 @@
 package com.example.project_mobile.ui.theme
-import android.content.Context
+
+import android.os.Handler
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,8 +26,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MailOutline
-//import androidx.compose.material.icons.filled.InsertComment
-
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -34,11 +34,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,26 +56,98 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import coil.compose.rememberAsyncImagePainter
 import com.example.project_mobile.R
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.sql.Timestamp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    val contextForToast = LocalContext.current
     var commentDialog by remember { mutableStateOf(false) }
+    var commentDialogId by remember { mutableStateOf(0) }
     var favorite by remember { mutableStateOf(false) }
 
+    var userItemsList = remember { mutableStateListOf<AllUserClass>() }
+    var commentItemsList = remember { mutableStateListOf<CommentClass>() }
+
+
+
+    lateinit var sharedPreferences: SharedPreferencesManager
+    val contextForToast = LocalContext.current.applicationContext
+    sharedPreferences = SharedPreferencesManager(contextForToast)
+    val userId = sharedPreferences.userId ?: 0
+
+    val createClient = ChitChatAPI.create()
+
+    var postsItems = remember { mutableStateListOf<PostClass>() }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+
+
+    LaunchedEffect(lifecycleState) {
+        when (lifecycleState) {
+            Lifecycle.State.DESTROYED -> {}
+            Lifecycle.State.INITIALIZED -> {}
+            Lifecycle.State.CREATED -> {}
+            Lifecycle.State.STARTED -> {}
+            Lifecycle.State.RESUMED -> {
+                createClient.getPosts(userId).enqueue(object : Callback<List<PostClass>> {
+                    override fun onResponse(
+                        call: Call<List<PostClass>>,
+                        response: Response<List<PostClass>>
+                    ) {
+                            response.body()?.forEach {
+                                postsItems.add(
+                                    PostClass(
+                                        it.post_id,
+                                        it.text,
+                                        it.img,
+                                        it.user_id,
+                                        it.create_at,
+                                        it.update_at,
+                                        it.delete_at,
+                                        it.user_name,
+                                        it.comment_count,
+                                        it.like_count,
+
+
+
+                                    )
+                                )
+                            }
+                    }
+
+                    override fun onFailure(call: Call<List<PostClass>>, t: Throwable) {
+                        Toast.makeText(
+                            contextForToast,
+                            "Error onFailure " + t.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
+
+            }
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Row(
             modifier = Modifier
@@ -98,12 +167,10 @@ fun HomeScreen(navController: NavHostController) {
                     .padding(10.dp)
             )
             // ... (other elements)
-
-
             Button(
                 onClick = {
                     // Perform search
-                    navController.navigate(Search.SearchFriend.route)
+                    navController.navigate(Search.SearchAccout.route)
                 },
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
                 modifier = Modifier
@@ -114,9 +181,6 @@ fun HomeScreen(navController: NavHostController) {
         }
 
 
-
-
-
         // Divider line between "Chit Chat" and LazyColumn
         Divider(
             color = Color.LightGray,
@@ -125,14 +189,13 @@ fun HomeScreen(navController: NavHostController) {
         )
 
 
-
-
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 90.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
 //            verticalAlignment = Alignment.Top
         ) {
-            items(5) { index ->
+
+            items(postsItems) { post ->
                 // สร้างเลย์เอาต์สำหรับแต่ละโพสต์
                 Card(
                     modifier = Modifier
@@ -154,6 +217,33 @@ fun HomeScreen(navController: NavHostController) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
+
+                            // รูปภาพของผู้ใช้
+                            Box(
+                                modifier = Modifier
+                                    .size(38.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // รูปภาพของผู้ใช้
+                                Image(
+                                    painter = painterResource(id = R.drawable.fang), // เปลี่ยนเป็นรูปภาพที่ต้องการ
+                                    contentDescription = "Post Image",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(38.dp), // กำหนดความสูงของรูปภาพ
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            // ชื่อผู้ใช้
+                            Text(
+                                text = post.user_name,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         // ใส่รูปภาพตามความเหมาะสม
@@ -165,24 +255,21 @@ fun HomeScreen(navController: NavHostController) {
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.my_friends), // เปลี่ยนเป็นรูปภาพที่ต้องการ
-                                contentDescription = "Post Image",
+                                painter = rememberAsyncImagePainter(post.img), // เปลี่ยนเป็นรูปภาพที่ต้องการ
+                                contentDescription = post.img,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(300.dp), // กำหนดความสูงของรูปภาพ
                                 contentScale = ContentScale.Fit
+
                             )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-
-
-
-
                             ) {
                             Text(
-                                text = "ชอบผู้ชาย InNoverbBoy ง่ะเตง", // จำนวนการถูกใจ
+                                text = post.text,
                                 fontSize = 17.sp,
                                 color = Color.Black
                             )
@@ -202,24 +289,52 @@ fun HomeScreen(navController: NavHostController) {
                                     contentDescription = "Like",
                                     tint = if (favorite) Color.Red else Color.Gray
                                 )
+
                             }
-
-
                             Spacer(modifier = Modifier.width(1.dp))
 
 
                             Text(
-                                text = " ", // จำนวนการถูกใจ
+                                text = post.like_count.toString(), // จำนวนการถูกใจ
                                 fontSize = 17.sp,
                                 color = Color.Black
                             )
-
-
-
-
                             Spacer(modifier = Modifier.width(10.dp))
                             IconButton(
-                                onClick = { commentDialog = true }
+                                onClick = {
+                                    commentDialog = true
+                                    commentDialogId = post.post_id
+                                    commentItemsList.clear()
+
+                                    createClient.getComment(commentDialogId).enqueue(object : Callback<List<CommentClass>> {
+                                        override fun onResponse(
+                                            call: Call<List<CommentClass>>,
+                                            response: Response<List<CommentClass>>
+                                        ) {
+
+                                            response.body()?.forEach {
+                                                commentItemsList.add(
+                                                    CommentClass(
+                                                        it.comment_id,
+                                                        it.text,
+                                                        it.post_id,
+                                                        it.created_at,
+                                                        it.deleted_at,
+                                                        it.userName,
+                                                        it.img,
+                                                    )
+                                                )
+                                            }
+                                        }
+                                        override fun onFailure(call: Call<List<CommentClass>>, t: Throwable) {
+                                            Toast.makeText(
+                                                contextForToast,
+                                                "Error onFailure " + t.message,
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    })
+                                }
                             ) {
                                 Icon(
                                     Icons.Filled.MailOutline,
@@ -227,6 +342,11 @@ fun HomeScreen(navController: NavHostController) {
                                     tint = Color.Gray
                                 )
                             }
+                            Text(
+                                text = post.comment_count.toString(), // จำนวน comment
+                                fontSize = 17.sp,
+                                color = Color.Black
+                            )
                             if (commentDialog) {
                                 AlertDialog(
                                     onDismissRequest = { commentDialog = false },
@@ -238,7 +358,7 @@ fun HomeScreen(navController: NavHostController) {
                                         LazyColumn(
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            items(5) { index ->
+                                            items(commentItemsList) { comment ->
                                                 // Create layout for each post
                                                 Card(
                                                     modifier = Modifier
@@ -260,10 +380,21 @@ fun HomeScreen(navController: NavHostController) {
                                                         // Circular image placeholder
                                                         Box(
                                                             modifier = Modifier
-                                                                .size(50.dp) // Adjust size as needed
+                                                                .size(50.dp)
                                                                 .clip(CircleShape)
-                                                                .background(Color.Gray) // Placeholder color
-                                                        )
+                                                                .background(Color.Gray),
+                                                            contentAlignment = Alignment.Center
+                                                        ) {
+                                                            // รูปภาพของผู้ใช้
+                                                            Image(
+                                                                painter = rememberAsyncImagePainter(comment.img), // เปลี่ยนเป็นรูปภาพที่ต้องการ
+                                                                contentDescription = "Post Image",
+                                                                modifier = Modifier
+                                                                    .fillMaxWidth()
+                                                                    .height(38.dp), // กำหนดความสูงของรูปภาพ
+                                                                contentScale = ContentScale.Crop
+                                                            )
+                                                        }
 
 
                                                         Spacer(modifier = Modifier.width(16.dp))
@@ -272,13 +403,13 @@ fun HomeScreen(navController: NavHostController) {
                                                         // Text content
                                                         Column {
                                                             Text(
-                                                                text = "เพื่อน ${index + 1}",
+                                                                text = "เพื่อน ${comment.userName}",
                                                                 fontSize = 18.sp,
                                                                 fontWeight = FontWeight.Bold,
                                                                 color = Color.Black
                                                             )
                                                             Text(
-                                                                text = "ความคิดเห็น ${index + 1}",
+                                                                text = "ความคิดเห็น ${comment.text}",
                                                                 fontSize = 14.sp,
                                                                 color = Color.Black
                                                             )
@@ -310,16 +441,29 @@ fun HomeScreen(navController: NavHostController) {
                                                 ),
                                                 shape = RoundedCornerShape(8.dp)
                                             )
-
-
                                             Spacer(modifier = Modifier.height(1.dp))
-
-
                                             Button(
                                                 onClick = {
-                                                    // นำความคิดเห็นใหม่เพิ่มเข้าไปในรายการความคิดเห็น
-                                                    // ทำตามต้องการ
+
+                                                    // Add code to insert data into the database
+                                                    createClient.insertComment(
+                                                        newComment,
+                                                        userId,
+                                                        commentDialogId
+                                                    ).enqueue(object : Callback<CommentClass>{
+                                                        override fun onResponse(call: Call<CommentClass>, response: Response<CommentClass>) {
+                                                            if(response.isSuccessful){
+                                                                Toast.makeText(contextForToast,"Successfully Inserted",
+                                                                    Toast.LENGTH_SHORT).show()
+                                                            }
+                                                        }
+
+                                                        override fun onFailure(call: Call<CommentClass>, t: Throwable) {
+                                                            Toast.makeText(contextForToast,"Error onFailure "+t.message,Toast.LENGTH_LONG).show()
+                                                        }
+                                                    })
                                                     commentDialog = false
+
                                                 },
                                                 colors = ButtonDefaults.buttonColors(
                                                     Color(130, 0, 131, 255)
@@ -343,9 +487,8 @@ fun HomeScreen(navController: NavHostController) {
             }
 
         }
-
-
     }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom,
@@ -353,8 +496,11 @@ fun HomeScreen(navController: NavHostController) {
     ) {
         MyBottomBar(navController = navController, contextForToast = contextForToast)
     }
-
 }
+
+
+
+
 
 
 

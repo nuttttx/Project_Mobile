@@ -6,6 +6,7 @@ import java.sql.Timestamp
 
 
 data class AllUserClass(
+
     @Expose
     @SerializedName("user_id") val user_id: Int,
 
@@ -31,6 +32,6 @@ data class AllUserClass(
     @SerializedName("update_at") val update_at: Timestamp,
 
     @Expose
-    @SerializedName("delete_at") val delete_at: Timestamp,
+    @SerializedName("delete_at") val delete_at: Int,
 
     )

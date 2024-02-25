@@ -77,4 +77,5 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.2.2")
 
+
 }

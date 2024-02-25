@@ -16,6 +16,16 @@ class SharedPreferencesManager(private val context: Context) {
         get() = preferences.getString(KEY_USER_EMAIL, null)
         set(value) = preferences.edit().putString(KEY_USER_EMAIL, value).apply()
 
+
+    var userId: Int?
+        get() = preferences.getInt(KEY_USER_ID, -1).takeIf { it != -1 }
+        set(value) = preferences.edit().putInt(KEY_USER_ID, value ?: -1).apply()
+
+    var userName: String?
+    get() = preferences.getString(KEY_USER_NAME, null)
+    set(value) = preferences.edit().putString(KEY_USER_NAME, value).apply()
+
+
     fun clearUserAll() {
         preferences.edit {
             remove(KEY_USER_EMAIL)
@@ -32,6 +42,9 @@ class SharedPreferencesManager(private val context: Context) {
     companion object {
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
         private const val KEY_USER_EMAIL = "user_email"
+        private const val KEY_USER_ID = "user_id"
+        private const val KEY_USER_NAME = "user_name"
+
 
     }
 }

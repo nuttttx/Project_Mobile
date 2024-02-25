@@ -9,7 +9,8 @@ import androidx.navigation.compose.composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Login.route
+        startDestination = Screen2.Home.route
+//        startDestination = Screen.AllUser.route
 
     ) {
         composable(route = Screen.Login.route) { navBackStackEntry ->
@@ -18,9 +19,9 @@ fun NavGraph(navController: NavHostController) {
         composable(route = Screen.Register.route) { navBackStackEntry ->
             RegisterScreen(navController)
         }
-//        composable(route = Screen.AllUser.route) { navBackStackEntry ->
-//            AllUserScreen(navController)
-//        }
+        composable(route = Screen.AllUser.route) { navBackStackEntry ->
+            AllUserScreen(navController)
+        }
 //        composable(route = Screen2.Profile.route) { navBackStackEntry ->
 //            ProfileScreen(navController)
 //        }
@@ -52,7 +53,7 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(
             route = Search.SearchAccout.route) {
-            SearchAccout(navController)
+            SearchAccount(navController)
         }
 
 
@@ -66,6 +67,16 @@ fun NavGraph(navController: NavHostController) {
         composable(route = Screen.ImageProfile.route) { navBackStackEntry ->
             ImageProfile(navController)
         }
+
+        //P nut
+        composable(route = Screen2.AddPost.route) {
+           AddPost(navController)
+        }
+        composable(route = Screen.EditPost.route) { navBackStackEntry ->
+            EditPost(navController)
+        }
+
+
 
 
 

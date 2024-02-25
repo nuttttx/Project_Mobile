@@ -16,6 +16,7 @@ sealed class Screen (val route: String, val name: String  ){
     object Profile: Screen(route = "profile_screen", name="Profile")
     object EditProfile: Screen(route = "editprofile_screen", name="EditProfile")
     object ImageProfile: Screen(route = "Imageprofile_screen", name="ImageProfile")
+    object EditPost: Screen(route = "EditPost", name = "EditPost")
 
 
 }
