@@ -1,15 +1,16 @@
 package com.example.project_mobile.ui.theme
 
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +25,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -99,7 +99,7 @@ fun ProfileScreen(navController: NavHostController) {
     sharedPreferences = SharedPreferencesManager(contextForToast)
     val userId = sharedPreferences.userId ?: 0
 
-    val initialUser = ProfileClass(0, "", "", "", Timestamp(0), Timestamp(0), 0)
+    val initialUser = ProfileClass(0, "", "", "","", Timestamp(0), Timestamp(0), 0)
 
     var userItem by remember { mutableStateOf(initialUser) }
     var postsItems = remember { mutableStateListOf<PostClass>() }
@@ -108,11 +108,10 @@ fun ProfileScreen(navController: NavHostController) {
     var commentDialogId by remember { mutableStateOf(0) }
     val postCount = postsItems.size
     val userCount = userItemsList.size
-
-
-
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+
+
 
     LaunchedEffect(lifecycleState) {
         when (lifecycleState) {
@@ -132,6 +131,7 @@ fun ProfileScreen(navController: NavHostController) {
                                 response.body()!!.user_name,
                                 response.body()!!.email,
                                 response.body()!!.img,
+                                response.body()!!.gender,
                                 response.body()!!.create_at,
                                 response.body()!!.update_at,
                                 response.body()!!.delete_at,
@@ -400,7 +400,7 @@ fun ProfileScreen(navController: NavHostController) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    var itemClick = ProfileClass(0, "", "", "", Timestamp(0), Timestamp(0), 0)
+                    var itemClick = ProfileClass(0, "", "", "","", Timestamp(0), Timestamp(0), 0)
                     Spacer(modifier = Modifier.height(30.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -449,6 +449,7 @@ fun ProfileScreen(navController: NavHostController) {
                                     userItem.user_name,
                                     userItem.email,
                                     userItem.img,
+                                    userItem.gender,
                                     userItem.create_at,
                                     userItem.update_at,
                                     userItem.delete_at
@@ -817,8 +818,6 @@ fun ProfileScreen(navController: NavHostController) {
             }
 
         }
-
-
     }
     Column(
         modifier = Modifier.fillMaxSize(),

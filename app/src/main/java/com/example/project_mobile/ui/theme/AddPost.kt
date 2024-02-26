@@ -77,20 +77,6 @@ fun AddPost(navController: NavHostController) {
     sharedPreferences = SharedPreferencesManager(contextForToast)
     val userId = sharedPreferences.userId ?: 0
     val createClient = ChitChatAPI.create()
-    val initialUser = AllUserClass(
-        user_id = 0,
-        user_name = "",
-        email = "",
-        password = "",
-        img = "",
-        gender = "",
-        create_at = Timestamp(System.currentTimeMillis()), // หรือค่าเริ่มต้นอื่น ๆ ตามที่คุณต้องการ
-        update_at = Timestamp(System.currentTimeMillis()), // หรือค่าเริ่มต้นอื่น ๆ ตามที่คุณต้องการ
-        delete_at = 0 // หรือค่าเริ่มต้นอื่น ๆ ตามที่คุณต้องการ
-    )
-
-
-    var userItem by remember { mutableStateOf(initialUser) }
 
     val backgroundColor = Color(130, 0, 131, 255)
     val backgroundButtonColor = Color(130, 0, 131, 255)
@@ -269,8 +255,6 @@ fun AddPost(navController: NavHostController) {
             shape = RoundedCornerShape(corner = CornerSize(16.dp)),
             colors = TextFieldDefaults.run {
                 textFieldColors(
-
-
                     focusedIndicatorColor = Color.Transparent, // Remove indicator color
                     unfocusedIndicatorColor = Color.Transparent // Remove indicator color
                 )

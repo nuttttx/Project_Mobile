@@ -1,6 +1,9 @@
 package com.example.project_mobile.ui.theme
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,22 +52,53 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.example.project_mobile.R
-
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
+import java.sql.Timestamp
 
 @Composable
-fun ImageProfile(navController: NavHostController) {
 
+
+
+fun ImageProfile(navController: NavHostController) {
+    val createClient = ChitChatAPI.create()
+    lateinit var sharedPreferences: SharedPreferencesManager
+    val contextForToast = LocalContext.current.applicationContext
+    val userId = sharedPreferences.userId ?: 0
+    val data = navController.previousBackStackEntry?.savedStateHandle?.get<ProfileClass>("data")
+        ?: ProfileClass(
+            0,
+            "",
+            "",
+            "",
+            "",
+            Timestamp(0),
+            Timestamp(0),
+            0
+        )
+
+    var username by remember { mutableStateOf(data.user_name) }
+    var email by remember { mutableStateOf(data.email) }
+    var genderValue by remember { mutableStateOf(data.gender) }
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
+    val galleryLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                imageUri = it
+                // Handle the selected image URI
+                imageUri = uri
             }
-        })
-
+        }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -94,8 +129,8 @@ fun ImageProfile(navController: NavHostController) {
                     .weight(1f),
             )
         }
-
-
+//
+//
         // เส้นแบ่ง
         Divider(
             color = Color.LightGray,
@@ -126,7 +161,9 @@ fun ImageProfile(navController: NavHostController) {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(painter = if(imageUri != null){
+                Image(painter =
+                if(imageUri != null)
+                {
                     rememberAsyncImagePainter( imageUri)
                 }else{
                     painterResource(id = R.drawable.fang)
@@ -161,12 +198,10 @@ fun ImageProfile(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
+
                 },
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
-//                colors = OutlinedButtonDefaults.OutlinedButtonColors(
-//                    focusedBorderColor = Color(130, 0, 131, 255),
-//                    unfocusedBorderColor = Color(130, 0, 131, 255),
-//                    cursorColor = Color(130, 0, 131, 255),)
+
             ) {
                 Text("บันทึก")
             }

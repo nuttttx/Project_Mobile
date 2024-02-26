@@ -1,5 +1,6 @@
 package com.example.project_mobile.ui.theme
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,16 +52,39 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.project_mobile.R
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.sql.Timestamp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(navController: NavHostController) {
-    var username by remember { mutableStateOf("") }
-    var genderValue by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+    val createClient = ChitChatAPI.create()
+    lateinit var sharedPreferences: SharedPreferencesManager
+    val contextForToast = LocalContext.current.applicationContext
+    sharedPreferences = SharedPreferencesManager(contextForToast)
+    val data = navController.previousBackStackEntry?.savedStateHandle?.get<ProfileClass>("data")
+        ?: ProfileClass(
+            0,
+            "",
+            "",
+            "",
+            "",
+            Timestamp(0),
+            Timestamp(0),
+            0
+        )
+
+    var username by remember { mutableStateOf(data.user_name) }
+    var email by remember { mutableStateOf(data.email) }
+    var genderValue by remember { mutableStateOf(data.gender) }
+    var img by remember { mutableStateOf(data.img) }
+
+
 
 
     Column(
@@ -76,6 +101,7 @@ fun EditProfileScreen(navController: NavHostController) {
         ) {
             IconButton(
                 onClick = {
+
                     navController.navigate(Screen.Profile.route)
                 },
             ) {
@@ -126,7 +152,7 @@ fun EditProfileScreen(navController: NavHostController) {
                         .background(Color.Gray)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.fang),
+                        painter = rememberAsyncImagePainter(data.img),
                         contentDescription = "Profile Image",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -175,7 +201,7 @@ fun EditProfileScreen(navController: NavHostController) {
                     cursorColor = Color(130, 0, 131, 255),
                 ),
             )
-//            Spacer(Modifier.padding(10.dp))
+//
 
 
             genderValue = EditRadioGroupUsage(genderValue)
@@ -183,9 +209,9 @@ fun EditProfileScreen(navController: NavHostController) {
 
 //            Spacer(Modifier.padding(10.dp))
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("รหัสผ่าน") },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("อีเมล") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(corner = CornerSize(8.dp)),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -198,9 +224,9 @@ fun EditProfileScreen(navController: NavHostController) {
                 )
             Spacer(Modifier.padding(10.dp))
             OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
-                label = { Text("ยืนยันรหัสผ่าน") },
+                value = img,
+                onValueChange = { img = it },
+                label = { Text("URL รูปภาพ") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(corner = CornerSize(8.dp)),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -212,7 +238,31 @@ fun EditProfileScreen(navController: NavHostController) {
             Spacer(Modifier.padding(10.dp))
             Button(
                 onClick = {
-                    // ดำเนินการเมื่อคลิกบันทึก
+                    createClient.updateProfile(
+                        data.user_id,
+                        email = email,
+                        gender = genderValue,
+                        img =  img,
+                        user_name = username,
+                    ).enqueue(object : Callback<ProfileClass> {
+                        override fun onResponse(call: Call<ProfileClass>, response: Response<ProfileClass>) {
+                            if (response.isSuccessful) {
+                                Toast.makeText(contextForToast, "Successfully Updated", Toast.LENGTH_LONG).show()
+                            } else {
+                                Toast.makeText(contextForToast, "Update Failure", Toast.LENGTH_LONG).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ProfileClass>, t: Throwable) {
+                            Toast.makeText(contextForToast, "Error onFailure " + t.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    )
+                    navController.navigate(Screen.Profile.route)
+
+
+
+
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
@@ -231,7 +281,7 @@ fun EditRadioGroupUsage(s: String): String {
 
 
     Text(
-        text = "Student Gender:",
+        text = "Gender:",
         textAlign = TextAlign.Start,
         modifier = Modifier.fillMaxWidth().padding(start = 16.dp, top = 10.dp),
     )

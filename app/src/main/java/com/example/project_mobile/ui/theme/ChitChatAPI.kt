@@ -10,6 +10,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -83,6 +84,7 @@ interface ChitChatAPI {
         @Part("user_id") userId: RequestBody
     ): Call<PostClass>
 
+
     @FormUrlEncoded
     @POST("comment")
     fun insertComment(
@@ -101,6 +103,26 @@ interface ChitChatAPI {
     fun getFriends(
         @Path("user_id") userId: Int
     ): Call<List<FriendsClass>>
+
+    @FormUrlEncoded
+    @PUT(" edit-profile/{user_id}")
+    fun updateProfile(
+        @Path("user_id") user_id: Int,
+        @Field("user_name") user_name: String,
+        @Field("email") email: String,
+        @Field("gender") gender: String,
+        @Field("img") img: String
+    ): Call<ProfileClass>
+
+    @Multipart
+    @PUT("/uploadProfile/:user_id")
+    fun uploadProfile(
+        @Part("user_id") userId: RequestBody,
+        @Field("user_name") user_name: String,
+        @Field("email") email: String,
+        @Field("gender") gender: String,
+        @Part imagePart: MultipartBody.Part,
+    ): Call<ProfileClass>
 
 
 
