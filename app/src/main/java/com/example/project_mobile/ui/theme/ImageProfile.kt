@@ -1,5 +1,6 @@
 package com.example.project_mobile.ui.theme
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -64,16 +66,18 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.sql.Timestamp
+//ImageProfile
+
+
 
 @Composable
-
-
-
 fun ImageProfile(navController: NavHostController) {
-    val createClient = ChitChatAPI.create()
     lateinit var sharedPreferences: SharedPreferencesManager
     val contextForToast = LocalContext.current.applicationContext
+    sharedPreferences = SharedPreferencesManager(contextForToast)
     val userId = sharedPreferences.userId ?: 0
+    val createClient = ChitChatAPI.create()
+
     val data = navController.previousBackStackEntry?.savedStateHandle?.get<ProfileClass>("data")
         ?: ProfileClass(
             0,
@@ -86,19 +90,16 @@ fun ImageProfile(navController: NavHostController) {
             0
         )
 
-    var username by remember { mutableStateOf(data.user_name) }
-    var email by remember { mutableStateOf(data.email) }
-    var genderValue by remember { mutableStateOf(data.gender) }
-
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    val galleryLauncher =
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val launcher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
                 // Handle the selected image URI
-                imageUri = uri
+                selectedImageUri = uri
             }
         }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -114,7 +115,7 @@ fun ImageProfile(navController: NavHostController) {
         ) {
             IconButton(
                 onClick = {
-                    navController.navigate(Screen.EditProfile.route)
+                    navController.navigate(Screen.Profile.route)
                 },
             ) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
@@ -129,8 +130,8 @@ fun ImageProfile(navController: NavHostController) {
                     .weight(1f),
             )
         }
-//
-//
+
+
         // เส้นแบ่ง
         Divider(
             color = Color.LightGray,
@@ -161,12 +162,10 @@ fun ImageProfile(navController: NavHostController) {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(painter =
-                if(imageUri != null)
-                {
-                    rememberAsyncImagePainter( imageUri)
+                Image(painter = if(selectedImageUri != null){
+                    rememberAsyncImagePainter( selectedImageUri)
                 }else{
-                    painterResource(id = R.drawable.fang)
+                    rememberAsyncImagePainter(data.img)
                 },
                     contentDescription = null,
                     modifier = Modifier.size(250.dp)
@@ -182,7 +181,7 @@ fun ImageProfile(navController: NavHostController) {
         ) {
             Button(
                 onClick = {
-                    galleryLauncher.launch("image/*")
+                    launcher.launch("image/*")
                 },
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
             ) {
@@ -197,8 +196,63 @@ fun ImageProfile(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
+                //ปุ่มแก้ไข
                 onClick = {
 
+                    val inputStream =
+                        contextForToast.contentResolver.openInputStream(selectedImageUri!!)
+                            ?: throw Exception("Failed to open input stream")
+                    val imageFile = File.createTempFile("image", ".jpg")
+                    val outputStream = FileOutputStream(imageFile)
+                    inputStream.copyTo(outputStream)
+                    inputStream.close()
+                    outputStream.close()
+
+
+                    val requestBody = imageFile.asRequestBody("img/jpeg".toMediaTypeOrNull())
+                    val imagePart = MultipartBody.Part.createFormData(
+                        "img",
+                        imageFile.name, requestBody)
+
+                    createClient.uploadProfile(
+                        userId,
+                                imagePart,// ส่งไฟล์ jpg
+
+                    ).enqueue(object : Callback<ProfileClass> {
+                        override fun onResponse(
+                            call: Call<ProfileClass>,
+                            response: Response<ProfileClass>
+                        ) {
+                            if (response.isSuccessful) {
+                                Toast.makeText(
+                                    contextForToast,
+                                    "Successfully Inserted",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    contextForToast,
+                                    "Error Inserted",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+
+                        override fun onFailure(call: Call<ProfileClass>, t: Throwable) {
+                            Toast.makeText(
+                                contextForToast,
+                                "Error onFailure " + t.message,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                    })
+
+                    if (navController.currentBackStack.value.size >= 2) {
+                        navController.popBackStack()
+                    }
+                    navController.navigate(Screen.Profile.route)
                 },
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
 

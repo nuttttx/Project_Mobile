@@ -9,8 +9,8 @@ import androidx.navigation.compose.composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen2.Home.route
-//        startDestination = Screen.ImageProfile.route
+//        startDestination = Screen2.Home.route
+        startDestination = Screen.ImageProfile.route
 
     ) {
         composable(route = Screen.Login.route) { navBackStackEntry ->
@@ -22,9 +22,6 @@ fun NavGraph(navController: NavHostController) {
         composable(route = Screen.AllUser.route) { navBackStackEntry ->
             AllUserScreen(navController)
         }
-//        composable(route = Screen2.Profile.route) { navBackStackEntry ->
-//            ProfileScreen(navController)
-//        }
 
 
 //        fang

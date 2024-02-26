@@ -84,7 +84,6 @@ interface ChitChatAPI {
         @Part("user_id") userId: RequestBody
     ): Call<PostClass>
 
-
     @FormUrlEncoded
     @POST("comment")
     fun insertComment(
@@ -115,12 +114,9 @@ interface ChitChatAPI {
     ): Call<ProfileClass>
 
     @Multipart
-    @PUT("/uploadProfile/:user_id")
+    @PUT("/uploadProfile/{user_id}")
     fun uploadProfile(
-        @Part("user_id") userId: RequestBody,
-        @Field("user_name") user_name: String,
-        @Field("email") email: String,
-        @Field("gender") gender: String,
+        @Path("user_id") userId: Int,
         @Part imagePart: MultipartBody.Part,
     ): Call<ProfileClass>
 

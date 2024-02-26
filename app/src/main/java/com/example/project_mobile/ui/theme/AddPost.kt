@@ -83,7 +83,8 @@ fun AddPost(navController: NavHostController) {
     var caption by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val launcher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
                 // Handle the selected image URI
                 selectedImageUri = uri
