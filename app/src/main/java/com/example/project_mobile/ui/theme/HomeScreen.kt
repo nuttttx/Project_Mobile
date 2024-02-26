@@ -1,6 +1,4 @@
 package com.example.project_mobile.ui.theme
-
-import android.os.Handler
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,9 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-
 import androidx.compose.material.icons.Icons
-
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MailOutline
@@ -121,6 +117,7 @@ fun HomeScreen(navController: NavHostController) {
                                         it.update_at,
                                         it.delete_at,
                                         it.user_name,
+                                        it.user_img,
                                         it.comment_count,
                                         it.like_count,
 
@@ -228,7 +225,7 @@ fun HomeScreen(navController: NavHostController) {
                             ) {
                                 // รูปภาพของผู้ใช้
                                 Image(
-                                    painter = painterResource(id = R.drawable.fang), // เปลี่ยนเป็นรูปภาพที่ต้องการ
+                                    painter = rememberAsyncImagePainter(post.user_img), // เปลี่ยนเป็นรูปภาพที่ต้องการ
                                     contentDescription = "Post Image",
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -299,6 +296,7 @@ fun HomeScreen(navController: NavHostController) {
                                 fontSize = 17.sp,
                                 color = Color.Black
                             )
+
                             Spacer(modifier = Modifier.width(10.dp))
                             IconButton(
                                 onClick = {

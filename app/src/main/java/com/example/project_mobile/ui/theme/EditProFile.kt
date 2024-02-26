@@ -56,8 +56,6 @@ import com.example.project_mobile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(navController: NavHostController) {
-
-
     var username by remember { mutableStateOf("") }
     var genderValue by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

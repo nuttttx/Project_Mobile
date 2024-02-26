@@ -48,7 +48,20 @@ interface ChitChatAPI {
     fun getPosts(
         @Path("user_id") userId: Int
     ): Call<List<PostClass>>
-    @GET("user/{user_id}")
+
+    @GET("user-posts/{user_id}")
+    fun getUserPosts(
+        @Path("user_id") userId: Int
+    ): Call<List<PostClass>>
+
+//    @GET("/user-posts/{user_id}")
+//    fun getPosts(
+//        @Path("user_id") userId: Int
+//    ): Call<UserPostsData>
+
+
+
+    @GET("profile/{user_id}")
     fun getUser(
         @Path("user_id") userId: Int
     ): Call<AllUserClass>
@@ -84,13 +97,10 @@ interface ChitChatAPI {
         @Path("post_id") postId: Int
     ): Call<List<CommentClass>>
 
-
-
-
-
-
-
-
+    @GET("friends/{user_id}")
+    fun getFriends(
+        @Path("user_id") userId: Int
+    ): Call<List<FriendsClass>>
 
 
 

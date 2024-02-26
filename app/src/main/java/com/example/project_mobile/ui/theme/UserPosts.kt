@@ -4,9 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import java.sql.Timestamp
 
-
 @Parcelize
-data class PostClass(
+class UserPosts(
     val post_id: Int,
     val text: String,
     val img: String,
@@ -19,5 +18,9 @@ data class PostClass(
     val comment_count: Int,
     val like_count: Int,
 ): Parcelable
+
+
+
+
 
 
