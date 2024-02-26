@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -112,7 +113,6 @@ fun ProfileScreen(navController: NavHostController) {
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
 
 
-
     LaunchedEffect(lifecycleState) {
         when (lifecycleState) {
             Lifecycle.State.DESTROYED -> {}
@@ -154,18 +154,6 @@ fun ProfileScreen(navController: NavHostController) {
                         ).show()
                     }
                 })
-            }
-        }
-    }
-
-
-    LaunchedEffect(lifecycleState) {
-        when (lifecycleState) {
-            Lifecycle.State.DESTROYED -> {}
-            Lifecycle.State.INITIALIZED -> {}
-            Lifecycle.State.CREATED -> {}
-            Lifecycle.State.STARTED -> {}
-            Lifecycle.State.RESUMED -> {
                 createClient.getUserPosts(userId).enqueue(object : Callback<List<PostClass>> {
                     override fun onResponse(
                         call: Call<List<PostClass>>,
@@ -185,9 +173,7 @@ fun ProfileScreen(navController: NavHostController) {
                                     it.user_img,
                                     it.comment_count,
                                     it.like_count,
-
-
-                                    )
+                                )
                             )
                         }
                     }
@@ -200,20 +186,6 @@ fun ProfileScreen(navController: NavHostController) {
                         ).show()
                     }
                 })
-
-            }
-        }
-    }
-
-
-
-    LaunchedEffect(lifecycleState) {
-        when (lifecycleState) {
-            Lifecycle.State.DESTROYED -> {}
-            Lifecycle.State.INITIALIZED -> {}
-            Lifecycle.State.CREATED -> {}
-            Lifecycle.State.STARTED -> {}
-            Lifecycle.State.RESUMED -> {
                 createClient.getFriends(userId).enqueue(object : Callback<List<FriendsClass>> {
                     override fun onResponse(
                         call: Call<List<FriendsClass>>,
@@ -230,7 +202,7 @@ fun ProfileScreen(navController: NavHostController) {
                                     it.create_at,
                                     it.update_at,
                                     it.delete_at,
-                                    )
+                                )
                             )
                         }
                     }
@@ -243,11 +215,13 @@ fun ProfileScreen(navController: NavHostController) {
                         ).show()
                     }
                 })
-
             }
         }
     }
 
+
+    val initialPost = PostClass(0, "", "", 0, Timestamp(0), Timestamp(0),0,"","",0,0)
+    var postItem by remember { mutableStateOf(initialPost) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -476,6 +450,7 @@ fun ProfileScreen(navController: NavHostController) {
 
             items(postsItems) { post ->
                 // สร้างเลย์เอาต์สำหรับแต่ละโพสต์
+
                 Card(
                     modifier = Modifier
                         .padding(horizontal = 8.dp, vertical = 8.dp)
@@ -489,6 +464,7 @@ fun ProfileScreen(navController: NavHostController) {
                     ),
                     shape = RoundedCornerShape(corner = CornerSize(16.dp)),
                 ) {
+                    var itemClick = PostClass(0, "", "", 0, Timestamp(0),Timestamp(0),0,"","",0,0)
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
@@ -522,56 +498,35 @@ fun ProfileScreen(navController: NavHostController) {
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            // ปุ่มดรอปดาว (ปุ่มแก้ไขและลบ)
+                            //ปุ่มมแก้ไข
                             Box(
                                 modifier = Modifier
                                     .size(24.dp)
                                     .clip(RoundedCornerShape(4.dp))
                                     .background(Color.Transparent)
-                                    .clickable { expanded = true }
-                            ) {
-                                IconButton(onClick = {
-                                    expanded = true
-                                })
-                                {
-                                    Icon(
-                                        Icons.Filled.MoreVert,
-                                        contentDescription = "Options",
-                                        tint = Color.Gray
-                                    )
-                                }
-                                if(expanded){
-                                    DropdownMenu(
-                                        modifier = Modifier.background(Color.White),
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false },
-                                    ) {
-                                        // Menu items
-                                        DropdownMenuItem(
-                                            text = { Text("แก้ไขโพสต์") },
-                                            onClick = {
-//                                            Toast.makeText(contextForToast, "Settings", Toast.LENGTH_SHORT).show()
-                                                expanded = false
-                                            },
-//                                        leadingIcon = {
-//                                            Icon(
-//                                                Icons.Outlined.Settings,
-//                                                contentDescription = null
-//                                            )
-//
-//                                        }
+                                    .clickable {
+                                        itemClick = post
+                                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                                            "post",
+                                            PostClass(
+                                                post.post_id,
+                                                post.text,
+                                                post.img,
+                                                post.user_id,
+                                                post.create_at,
+                                                post.update_at,
+                                                post.delete_at,
+                                                post.user_name,
+                                                post.user_img,
+                                                post.comment_count,
+                                                post.like_count,
+                                            )
                                         )
-                                        DropdownMenuItem(
-                                            text = { Text("ลบโพสต์") },
-                                            onClick = {
-//                                            Toast.makeText(contextForToast, "Logout", Toast.LENGTH_SHORT).show()
-                                                expanded = false
-                                            },
-                                        )
+                                        navController.navigate(Screen.EditPost.route)
                                     }
 
-
-                                }
+                            ) {
+                                Icon(Icons.Default.Edit, contentDescription = "Edit Icon", tint = Color.Black)
                             }
                         }
                         Spacer(modifier = Modifier.height(16.dp))

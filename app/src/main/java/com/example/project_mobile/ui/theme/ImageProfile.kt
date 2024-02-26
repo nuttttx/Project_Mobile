@@ -162,7 +162,9 @@ fun ImageProfile(navController: NavHostController) {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(painter = if(selectedImageUri != null){
+                Image(
+                    painter = if(selectedImageUri != null)
+                {
                     rememberAsyncImagePainter( selectedImageUri)
                 }else{
                     rememberAsyncImagePainter(data.img)
@@ -198,7 +200,6 @@ fun ImageProfile(navController: NavHostController) {
             Button(
                 //ปุ่มแก้ไข
                 onClick = {
-
                     val inputStream =
                         contextForToast.contentResolver.openInputStream(selectedImageUri!!)
                             ?: throw Exception("Failed to open input stream")
@@ -216,7 +217,7 @@ fun ImageProfile(navController: NavHostController) {
 
                     createClient.uploadProfile(
                         userId,
-                                imagePart,// ส่งไฟล์ jpg
+                        imagePart,// ส่งไฟล์ jpg
 
                     ).enqueue(object : Callback<ProfileClass> {
                         override fun onResponse(

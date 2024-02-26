@@ -89,15 +89,7 @@ fun SearchAccount(navController: NavHostController){
     var userItemsList = remember { mutableStateListOf<AllUserClass>() }
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
-
-
-
-
-
-
     // ... (rest of your code remains the same)
-
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

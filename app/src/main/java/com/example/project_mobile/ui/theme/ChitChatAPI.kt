@@ -45,37 +45,27 @@ interface ChitChatAPI {
         @Path("user_name") user_name: String
     ): Call<AllUserClass>
 
+//    ทุกโพสต์
     @GET("posts/{user_id}")
     fun getPosts(
         @Path("user_id") userId: Int
     ): Call<List<PostClass>>
+
+    //ดึงข้อมูลแค่ละโพสต์
+    @GET("post/{post_id}")
+    fun getPost(
+        @Path("post_id") postId: Int
+    ): Call<PostClass>
 
     @GET("user-posts/{user_id}")
     fun getUserPosts(
         @Path("user_id") userId: Int
     ): Call<List<PostClass>>
 
-//    @GET("/user-posts/{user_id}")
-//    fun getPosts(
-//        @Path("user_id") userId: Int
-//    ): Call<UserPostsData>
-
-
-
     @GET("profile/{user_id}")
     fun getUser(
         @Path("user_id") userId: Int
     ): Call<AllUserClass>
-
-    @Multipart
-    @POST("editPost/{post_id}")
-    fun editPost(
-        @Path("post_id") postId: Int,
-        @Part("text") text: MultipartBody.Part,
-        @Part imagePart: Int,
-        @Part("user_id") userId: Int,
-    ): Call<PostClass>
-
     @Multipart
     @POST("uploadPosts")
     fun uploadPost(
@@ -104,7 +94,7 @@ interface ChitChatAPI {
     ): Call<List<FriendsClass>>
 
     @FormUrlEncoded
-    @PUT(" edit-profile/{user_id}")
+    @PUT("edit-profile/{user_id}")
     fun updateProfile(
         @Path("user_id") user_id: Int,
         @Field("user_name") user_name: String,
@@ -120,6 +110,13 @@ interface ChitChatAPI {
         @Part imagePart: MultipartBody.Part,
     ): Call<ProfileClass>
 
+    @Multipart
+    @PUT("editPost/{post_id}")
+    fun editPost(
+        @Path("post_id") postId: Int,
+//        @Part("text") text: RequestBody,
+        @Part imagePart: MultipartBody.Part
+    ): Call<PostClass>
 
 
     companion object {

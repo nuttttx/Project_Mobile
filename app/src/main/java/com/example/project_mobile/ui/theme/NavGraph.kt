@@ -10,7 +10,7 @@ fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
 //        startDestination = Screen2.Home.route
-        startDestination = Screen.ImageProfile.route
+        startDestination = Screen.EditPost.route
 
     ) {
         composable(route = Screen.Login.route) { navBackStackEntry ->

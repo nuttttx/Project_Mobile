@@ -176,7 +176,6 @@ fun EditProfileScreen(navController: NavHostController) {
                     }
                     navController.navigate(Screen.ImageProfile.route)
                 },
-//                colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
             ) {
                 Text(
                     fontSize = 20.sp,
@@ -201,13 +200,9 @@ fun EditProfileScreen(navController: NavHostController) {
                     cursorColor = Color(130, 0, 131, 255),
                 ),
             )
-//
-
 
             genderValue = EditRadioGroupUsage(genderValue)
 
-
-//            Spacer(Modifier.padding(10.dp))
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -228,6 +223,7 @@ fun EditProfileScreen(navController: NavHostController) {
                 onValueChange = { img = it },
                 label = { Text("URL รูปภาพ") },
                 modifier = Modifier.fillMaxWidth(),
+                enabled = false,
                 shape = RoundedCornerShape(corner = CornerSize(8.dp)),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color(130, 0, 131, 255),
@@ -259,10 +255,6 @@ fun EditProfileScreen(navController: NavHostController) {
                     }
                     )
                     navController.navigate(Screen.Profile.route)
-
-
-
-
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
