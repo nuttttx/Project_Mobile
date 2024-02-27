@@ -118,6 +118,15 @@ interface ChitChatAPI {
         @Part imagePart: MultipartBody.Part
     ): Call<PostClass>
 
+    @FormUrlEncoded
+    @POST("likePost")
+    fun likePost(
+        @Field("post_id") postId: Int,
+        @Field("user_id") userId: Int
+    ): Call<LikesClass>
+
+
+
 
     companion object {
         fun create(): ChitChatAPI {

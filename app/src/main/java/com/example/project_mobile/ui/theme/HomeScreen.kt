@@ -76,8 +76,14 @@ fun HomeScreen(navController: NavHostController) {
     var commentDialog by remember { mutableStateOf(false) }
     var commentDialogId by remember { mutableStateOf(0) }
     var favorite by remember { mutableStateOf(false) }
+//    เอาไว้ไปใช้กดไลค์ตามpostId
+    var postId by remember { mutableStateOf(0) }
+    val initialLike = LikesClass(0, 0, 0,  Timestamp(0), Timestamp(0), 0)
+
+    var likeItem by remember { mutableStateOf(initialLike) }
 
     var userItemsList = remember { mutableStateListOf<AllUserClass>() }
+
     var commentItemsList = remember { mutableStateListOf<CommentClass>() }
 
 
@@ -92,6 +98,7 @@ fun HomeScreen(navController: NavHostController) {
     var postsItems = remember { mutableStateListOf<PostClass>() }
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+
 
 
     LaunchedEffect(lifecycleState) {
@@ -120,9 +127,6 @@ fun HomeScreen(navController: NavHostController) {
                                         it.user_img,
                                         it.comment_count,
                                         it.like_count,
-
-
-
                                     )
                                 )
                             }
@@ -136,6 +140,43 @@ fun HomeScreen(navController: NavHostController) {
                         ).show()
                     }
                 })
+
+
+                createClient.likePost(postId,userId).enqueue(object : Callback<LikesClass> {
+                    override fun onResponse(
+                        call: Call<LikesClass>,
+                        response: Response<LikesClass>
+                    ) {
+                        if (response.isSuccessful) {
+                            likeItem = LikesClass(
+                                response.body()!!.status,
+                                response.body()!!.user_id,
+                                response.body()!!.post_id,
+                                response.body()!!.create_at,
+                                response.body()!!.update_at,
+                                response.body()!!.delete_at,
+                            )
+                        } else {
+                            Toast.makeText(
+                                contextForToast,
+                                "",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                    override fun onFailure(call: Call<LikesClass>, t: Throwable) {
+                        Toast.makeText(
+                            contextForToast,
+                            "Error onFailure " + t.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
+                Toast.makeText(
+                    contextForToast,
+                    "${likeItem.status}",
+                    Toast.LENGTH_LONG
+                ).show()
 
             }
         }
@@ -182,12 +223,16 @@ fun HomeScreen(navController: NavHostController) {
         Divider(
             color = Color.LightGray,
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)
         )
 
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 90.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 90.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
 //            verticalAlignment = Alignment.Top
         ) {
@@ -278,13 +323,42 @@ fun HomeScreen(navController: NavHostController) {
                         ) {
                             IconButton(
                                 onClick = {
-                                    favorite = !favorite
+                                    postId = post.post_id
+                                    createClient.likePost(postId,userId).enqueue(object : Callback<LikesClass> {
+                                        override fun onResponse(
+                                            call: Call<LikesClass>,
+                                            response: Response<LikesClass>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                favorite = !favorite
+
+                                            } else {
+                                                Toast.makeText(
+                                                    contextForToast,
+                                                    "CAN NOT LIKED",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        }
+                                        override fun onFailure(call: Call<LikesClass>, t: Throwable) {
+                                            Toast.makeText(
+                                                contextForToast,
+                                                "Error onFailure " + t.message,
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    })
+
                                 }
                             ) {
+
                                 Icon(
-                                    if (favorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+//                                    if (favorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+//                                    contentDescription = "Like",
+//                                    tint = if (favorite) Color.Red else Color.Gray
+                                    if (likeItem.status == 1) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                     contentDescription = "Like",
-                                    tint = if (favorite) Color.Red else Color.Gray
+                                    tint = if (likeItem.status == 1 ) Color.Red else Color.Gray
                                 )
 
                             }
@@ -378,7 +452,7 @@ fun HomeScreen(navController: NavHostController) {
                                                         // Circular image placeholder
                                                         Box(
                                                             modifier = Modifier
-                                                                .size(50.dp)
+                                                                .size(60.dp)
                                                                 .clip(CircleShape)
                                                                 .background(Color.Gray),
                                                             contentAlignment = Alignment.Center
@@ -401,14 +475,14 @@ fun HomeScreen(navController: NavHostController) {
                                                         // Text content
                                                         Column {
                                                             Text(
-                                                                text = "เพื่อน ${comment.userName}",
-                                                                fontSize = 18.sp,
+                                                                text = "${comment.userName}",
+                                                                fontSize = 16.sp,
                                                                 fontWeight = FontWeight.Bold,
                                                                 color = Color.Black
                                                             )
                                                             Text(
-                                                                text = "ความคิดเห็น ${comment.text}",
-                                                                fontSize = 14.sp,
+                                                                text = "${comment.text}",
+                                                                fontSize = 16.sp,
                                                                 color = Color.Black
                                                             )
                                                         }

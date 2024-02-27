@@ -111,6 +111,13 @@ fun ProfileScreen(navController: NavHostController) {
     val userCount = userItemsList.size
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+    var postId by remember { mutableStateOf(0) }
+    val initialLike = LikesClass(0, 0, 0,  Timestamp(0), Timestamp(0), 0)
+
+    var likeItem by remember { mutableStateOf(initialLike) }
+
+
+
 
 
     LaunchedEffect(lifecycleState) {
@@ -215,6 +222,39 @@ fun ProfileScreen(navController: NavHostController) {
                         ).show()
                     }
                 })
+
+
+                createClient.likePost(postId,userId).enqueue(object : Callback<LikesClass> {
+                    override fun onResponse(
+                        call: Call<LikesClass>,
+                        response: Response<LikesClass>
+                    ) {
+                        if (response.isSuccessful) {
+                            likeItem = LikesClass(
+                                response.body()!!.status,
+                                response.body()!!.user_id,
+                                response.body()!!.post_id,
+                                response.body()!!.create_at,
+                                response.body()!!.update_at,
+                                response.body()!!.delete_at,
+                            )
+                        } else {
+                            Toast.makeText(
+                                contextForToast,
+                                "",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                    override fun onFailure(call: Call<LikesClass>, t: Throwable) {
+                        Toast.makeText(
+                            contextForToast,
+                            "Error onFailure " + t.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
+
             }
         }
     }
@@ -565,7 +605,32 @@ fun ProfileScreen(navController: NavHostController) {
                         ) {
                             IconButton(
                                 onClick = {
-                                    favorite = !favorite
+                                    postId = post.post_id
+                                    createClient.likePost(postId,userId).enqueue(object : Callback<LikesClass> {
+                                        override fun onResponse(
+                                            call: Call<LikesClass>,
+                                            response: Response<LikesClass>
+                                        ) {
+                                            if (response.isSuccessful) {
+
+
+                                            } else {
+                                                Toast.makeText(
+                                                    contextForToast,
+                                                    "CAN NOT LIKED",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        }
+                                        override fun onFailure(call: Call<LikesClass>, t: Throwable) {
+                                            Toast.makeText(
+                                                contextForToast,
+                                                "Error onFailure " + t.message,
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    })
+
                                 }
                             ) {
                                 Icon(
@@ -688,13 +753,13 @@ fun ProfileScreen(navController: NavHostController) {
                                                         // Text content
                                                         Column {
                                                             Text(
-                                                                text = "เพื่อน ${comment.userName}",
+                                                                text = "${comment.userName}",
                                                                 fontSize = 18.sp,
                                                                 fontWeight = FontWeight.Bold,
                                                                 color = Color.Black
                                                             )
                                                             Text(
-                                                                text = "ความคิดเห็น ${comment.text}",
+                                                                text = "${comment.text}",
                                                                 fontSize = 14.sp,
                                                                 color = Color.Black
                                                             )
