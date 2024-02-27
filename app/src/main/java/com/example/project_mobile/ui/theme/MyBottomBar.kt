@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 @Composable
-fun MyBottomBar(navController: NavHostController, contextForToast: Context) {
+fun MyBottomBar(indexPage : Int=0, navController: NavHostController, contextForToast: Context) {
     val navigationItems = listOf(Screen2.Home, Screen2.Friend, Screen2.AddPost, Screen2.Profile)
     var selectedScreen by remember { mutableStateOf(0) }
     NavigationBar {
@@ -49,7 +49,7 @@ fun MyBottomBar(navController: NavHostController, contextForToast: Context) {
                             modifier = Modifier.size(35.dp)
                         )
                     },
-                    selected = (selectedScreen == index),
+                    selected = (indexPage == index),
                     onClick = {
                         if (navController.currentBackStack.value.size >= 2) {
                             navController.popBackStack()

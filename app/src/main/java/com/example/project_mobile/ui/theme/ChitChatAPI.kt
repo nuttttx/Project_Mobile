@@ -162,14 +162,14 @@ interface ChitChatAPI {
     ): Call<List<FriendClass>>
     //ลบเพื่อน
     @PUT("/friends/{request_id}")
-    fun deleteFriend
-                (@Path("request_id") requestId: Int
+    fun deleteFriend(
+        @Path("request_id") requestId: Int
     ): Call<Void>
 
-    @DELETE("/delete/{post_id}")
+    @PUT("/deletePost/{post_id}")
     fun deletePost(
-        @Path("post_id") post_id: Int
-    ): Call<Void>
+        @Path("post_id") postId: Int
+    ): Call<PostClass>
 
 
 

@@ -70,6 +70,7 @@ fun RequestsFriend (navController: NavHostController) {
     val friendRequestsItemsList = remember { mutableStateListOf<FriendClass>() }
 
 
+
     LaunchedEffect(Unit) {
         createClient.getFriendRequests(userId).enqueue(object : Callback<List<FriendClass>> {
             override fun onResponse(call: Call<List<FriendClass>>, response: Response<List<FriendClass>>) {
@@ -134,7 +135,9 @@ fun RequestsFriend (navController: NavHostController) {
                 .padding(vertical = 6.dp)
         )
         LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 90.dp),
         ) {
             itemsIndexed(
                 items = friendRequestsItemsList.toList()
@@ -243,5 +246,12 @@ fun RequestsFriend (navController: NavHostController) {
 
             }
         }
+    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        MyBottomBar(indexPage = 1,navController = navController, contextForToast = contextForToast)
     }
 }

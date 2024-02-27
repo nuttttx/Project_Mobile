@@ -78,7 +78,7 @@ fun AddPost(navController: NavHostController) {
     val userId = sharedPreferences.userId ?: 0
     val createClient = ChitChatAPI.create()
 
-    val backgroundColor = Color(130, 0, 131, 255)
+    val backgroundColor = Color(255, 255, 255, 255)
     val backgroundButtonColor = Color(130, 0, 131, 255)
     var caption by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -123,7 +123,7 @@ fun AddPost(navController: NavHostController) {
                     Icons.Default.Close,
                     contentDescription = "Back",
                     modifier = Modifier.size(50.dp),
-                    tint = Color.White
+                    tint = Color(130, 0, 131, 255),
 
 
                 )
@@ -138,7 +138,7 @@ fun AddPost(navController: NavHostController) {
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .weight(1f),
-                color = Color.White
+                color = Color.Black
             )
 
 //          ปุ่มต้องการโพสต์
@@ -210,7 +210,7 @@ fun AddPost(navController: NavHostController) {
                     Icons.Default.Done,
                     contentDescription = "Done",
                     modifier = Modifier.size(50.dp),
-                    tint = Color.White
+                    tint = Color(130, 0, 131, 255),
                 )
             }
         }

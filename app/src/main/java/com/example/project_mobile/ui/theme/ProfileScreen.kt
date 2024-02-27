@@ -875,7 +875,7 @@ fun ProfileScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MyBottomBar(navController = navController, contextForToast = contextForToast)
+        MyBottomBar(indexPage = 3,navController = navController, contextForToast = contextForToast)
     }
 }
 

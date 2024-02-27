@@ -80,7 +80,7 @@ fun EditPost(navController: NavHostController) {
     sharedPreferences = SharedPreferencesManager(contextForToast)
 
     val createClient = ChitChatAPI.create()
-    val backgroundColor = Color(130, 0, 131, 255)
+    val backgroundColor = Color(255, 255, 255, 255)
     val backgroundButtonColor = Color(130, 0, 131, 255)
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -137,7 +137,7 @@ fun EditPost(navController: NavHostController) {
                     Icons.Default.Close,
                     contentDescription = "Back",
                     modifier = Modifier.size(50.dp),
-                    tint = Color.White
+                    tint = Color(130, 0, 131, 255),
 
 
                 )
@@ -152,7 +152,7 @@ fun EditPost(navController: NavHostController) {
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .weight(1f),
-                color = Color.White
+                color = Color.Black
             )
 
 //          ปุ่มต้องการโพสต์
@@ -216,7 +216,7 @@ fun EditPost(navController: NavHostController) {
                     Icons.Default.Done,
                     contentDescription = "Done",
                     modifier = Modifier.size(50.dp),
-                    tint = Color.White
+                    tint = Color(130, 0, 131, 255),
                 )
             }
         }
@@ -322,8 +322,8 @@ fun EditPost(navController: NavHostController) {
             Button(
                 //ลบโพสต์
                 onClick = {
-                    createClient.deletePost(postId).enqueue(object : Callback<Void> {
-                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    createClient.deletePost(postId).enqueue(object : Callback<PostClass> {
+                        override fun onResponse(call: Call<PostClass>, response: Response<PostClass>) {
                             if (response.isSuccessful) {
                                 Toast.makeText(
                                     contextForToast,
@@ -339,7 +339,7 @@ fun EditPost(navController: NavHostController) {
                             }
                         }
 
-                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                        override fun onFailure(call: Call<PostClass>, t: Throwable) {
                             Toast.makeText(
                                 contextForToast,
                                 "Error onFailure " + t.message,
@@ -347,9 +347,10 @@ fun EditPost(navController: NavHostController) {
                             ).show()
                         }
                     })
+                    navController.navigate(Screen.Profile.route)
 
                 },
-                colors = ButtonDefaults.buttonColors(Color.Red),
+                colors = ButtonDefaults.buttonColors(Color(226, 35, 40, 255),),
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .height(50.dp)
@@ -364,11 +365,9 @@ fun EditPost(navController: NavHostController) {
                     color = Color.White
                 )
             }
+
         }
 
     }
 }
-
-
-
 

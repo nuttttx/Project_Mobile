@@ -268,7 +268,7 @@ fun EditProfileScreen(navController: NavHostController) {
 
 @Composable
 fun EditRadioGroupUsage(s: String): String {
-    val kinds = listOf("Male", "Female", "Other")
+    val kinds = listOf("ชาย", "หญิง", "อื่นๆ")
     var (selected, setSelected) = remember { mutableStateOf(s) }
 
 
