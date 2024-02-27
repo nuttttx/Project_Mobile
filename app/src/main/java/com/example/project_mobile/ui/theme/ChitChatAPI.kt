@@ -121,7 +121,7 @@ interface ChitChatAPI {
         @Field("user_id") userId: Int
     ): Call<LikesClass>
 
-    @GET("getlike/:user_id/:post_id")
+    @GET("getlike/{user_id}/{post_id}")
     fun getLike(
         @Path("user_id") userId: Int,
         @Path("post_id") postId: Int
@@ -164,6 +164,11 @@ interface ChitChatAPI {
     @PUT("/friends/{request_id}")
     fun deleteFriend
                 (@Path("request_id") requestId: Int
+    ): Call<Void>
+
+    @DELETE("/delete/{post_id}")
+    fun deletePost(
+        @Path("post_id") post_id: Int
     ): Call<Void>
 
 

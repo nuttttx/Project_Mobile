@@ -18,6 +18,7 @@ data class PostClass(
     val user_img: String,
     val comment_count: Int,
     val like_count: Int,
+    val status: Int,
 ): Parcelable
 
 

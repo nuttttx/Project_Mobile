@@ -73,6 +73,7 @@ import java.sql.Timestamp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController) {
+
     var commentDialog by remember { mutableStateOf(false) }
     var commentDialogId by remember { mutableStateOf(0) }
     var favorite by remember { mutableStateOf(false) }
@@ -82,12 +83,10 @@ fun HomeScreen(navController: NavHostController) {
 
     var likeItem by remember { mutableStateOf(initialLike) }
 
-    var userItemsList = remember { mutableStateListOf<AllUserClass>() }
 
     var commentItemsList = remember { mutableStateListOf<CommentClass>() }
 
-    var status by remember { mutableStateOf(0) }
-
+    var likeStatus by remember { mutableStateOf(likeItem.status) }
 
 
     lateinit var sharedPreferences: SharedPreferencesManager
@@ -100,8 +99,40 @@ fun HomeScreen(navController: NavHostController) {
     var postsItems = remember { mutableStateListOf<PostClass>() }
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
-
-
+    fun getPosts(){
+        createClient.getPosts(userId).enqueue(object : Callback<List<PostClass>> {
+            override fun onResponse(
+                call: Call<List<PostClass>>,
+                response: Response<List<PostClass>>
+            ) {
+                response.body()?.forEach {
+                    postsItems.add(
+                        PostClass(
+                            it.post_id,
+                            it.text,
+                            it.img,
+                            it.user_id,
+                            it.create_at,
+                            it.update_at,
+                            it.delete_at,
+                            it.user_name,
+                            it.user_img,
+                            it.comment_count,
+                            it.like_count,
+                            it.status,
+                        )
+                    )
+                }
+            }
+            override fun onFailure(call: Call<List<PostClass>>, t: Throwable) {
+                Toast.makeText(
+                    contextForToast,
+                    "Error onFailure " + t.message,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
+    }
 
     LaunchedEffect(lifecycleState) {
         when (lifecycleState) {
@@ -110,38 +141,7 @@ fun HomeScreen(navController: NavHostController) {
             Lifecycle.State.CREATED -> {}
             Lifecycle.State.STARTED -> {}
             Lifecycle.State.RESUMED -> {
-                createClient.getPosts(userId).enqueue(object : Callback<List<PostClass>> {
-                    override fun onResponse(
-                        call: Call<List<PostClass>>,
-                        response: Response<List<PostClass>>
-                    ) {
-                            response.body()?.forEach {
-                                postsItems.add(
-                                    PostClass(
-                                        it.post_id,
-                                        it.text,
-                                        it.img,
-                                        it.user_id,
-                                        it.create_at,
-                                        it.update_at,
-                                        it.delete_at,
-                                        it.user_name,
-                                        it.user_img,
-                                        it.comment_count,
-                                        it.like_count,
-                                    )
-                                )
-                            }
-                    }
-                    override fun onFailure(call: Call<List<PostClass>>, t: Throwable) {
-                        Toast.makeText(
-                            contextForToast,
-                            "Error onFailure " + t.message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                })
-
+                getPosts()
 
                 createClient.likePost(postId,userId).enqueue(object : Callback<LikesClass> {
                     override fun onResponse(
@@ -174,29 +174,25 @@ fun HomeScreen(navController: NavHostController) {
                     }
                 })
 
-//                createClient.getLike(userId, postId).enqueue(object : Callback<LikesClass> {
-//                    override fun onResponse(call: Call<LikesClass>, response: Response<LikesClass>) {
-//                        if (response.isSuccessful) {
-//                            val statusResponse = response.body()
-//                            statusResponse?.let {
-//                                status = it.status
-//                            }
-//                        }
-//                    }
-//
-//                    override fun onFailure(call: Call<LikesClass>, t: Throwable) {
-//                        // รายละเอียดการจัดการเมื่อเกิดข้อผิดพลาด
-//                    }
-//                })
-//                Toast.makeText(
-//                    contextForToast,
-//                    "${status}",
-//                    Toast.LENGTH_LONG
-//                ).show()
-
+                createClient.getLike(postId,userId).enqueue(object : Callback<LikesClass> {
+                    override fun onResponse(
+                        call: Call<LikesClass>,
+                        response: Response<LikesClass>
+                    ) {
+                        if (response.isSuccessful) {
+                            likeStatus = response.body()?.status!!
+                        } else {
+                            likeStatus = 0
+                        }
+                    }
+                    override fun onFailure(call: Call<LikesClass>, t: Throwable) {
+                        likeStatus = 0
+                    }
+                })
             }
         }
     }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -346,6 +342,18 @@ fun HomeScreen(navController: NavHostController) {
                                             response: Response<LikesClass>
                                         ) {
                                             if (response.isSuccessful) {
+                                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                    "like",
+                                                    LikesClass(
+                                                        likeItem.status,
+                                                        likeItem.user_id,
+                                                        likeItem.post_id,
+                                                        likeItem.create_at,
+                                                        likeItem.update_at,
+                                                        likeItem.delete_at,
+                                                    )
+                                                )
+                                                navController.navigate(Screen2.Home.route)
 
 
                                             } else {
@@ -365,17 +373,15 @@ fun HomeScreen(navController: NavHostController) {
                                         }
                                     })
 
-
                                 }
                             ) {
-
                                 Icon(
 //                                    if (favorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
 //                                    contentDescription = "Like",
 //                                    tint = if (favorite) Color.Red else Color.Gray
-                                    if (status == 1) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                    if (post.status == 1) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                     contentDescription = "Like",
-                                    tint = if (status == 1 ) Color.Red else Color.Gray
+                                    tint = if (post.status == 1) Color.Red else Color.Gray
                                 )
 
                             }

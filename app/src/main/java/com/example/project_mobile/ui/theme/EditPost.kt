@@ -86,7 +86,8 @@ fun EditPost(navController: NavHostController) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val launcher =
         rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+            contract = ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
             uri?.let {
                 // Handle the selected image URI
                 selectedImageUri = uri
@@ -106,6 +107,7 @@ fun EditPost(navController: NavHostController) {
             0,
             "",
             "",
+            0,
             0,
             0
         )
@@ -165,31 +167,44 @@ fun EditPost(navController: NavHostController) {
                     inputStream.close()
                     outputStream.close()
 
-                   val requestBody = imageFile.asRequestBody("img/jpeg".toMediaTypeOrNull())
+                    val requestBody = imageFile.asRequestBody("img/jpeg".toMediaTypeOrNull())
                     val imagePart = MultipartBody.Part.createFormData(
                         "img",
-                        imageFile.name, requestBody)
+                        imageFile.name, requestBody
+                    )
                     val captionRequestBody = caption.toRequestBody("text/plain".toMediaTypeOrNull())
 
                     Toast.makeText(contextForToast, caption, Toast.LENGTH_LONG).show()
 
                     createClient.editPost(
-                        postId ,
+                        postId,
 //                        captionRequestBody,
                         imagePart,
 
 
-                    ).enqueue(object : Callback<PostClass> {
-                        override fun onResponse(call: Call<PostClass>, response: Response<PostClass>) {
+                        ).enqueue(object : Callback<PostClass> {
+                        override fun onResponse(
+                            call: Call<PostClass>,
+                            response: Response<PostClass>
+                        ) {
                             if (response.isSuccessful) {
-                                Toast.makeText(contextForToast, "Successfully Updated", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    contextForToast,
+                                    "Successfully Updated",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             } else {
-                                Toast.makeText(contextForToast, "Update Failure", Toast.LENGTH_LONG).show()
+                                Toast.makeText(contextForToast, "Update Failure", Toast.LENGTH_LONG)
+                                    .show()
                             }
                         }
 
                         override fun onFailure(call: Call<PostClass>, t: Throwable) {
-                            Toast.makeText(contextForToast, "Error onFailure " + t.message, Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                contextForToast,
+                                "Error onFailure " + t.message,
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                     )
@@ -226,15 +241,16 @@ fun EditPost(navController: NavHostController) {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = if(selectedImageUri != null)
-                    {
-                        rememberAsyncImagePainter( selectedImageUri)
-                    }else{
+                    painter = if (selectedImageUri != null) {
+                        rememberAsyncImagePainter(selectedImageUri)
+                    } else {
                         rememberAsyncImagePainter(post.img)
                     },
                     contentDescription = null,
-                    modifier = Modifier.size(250.dp)
-                        .align(Alignment.Center))
+                    modifier = Modifier
+                        .size(250.dp)
+                        .align(Alignment.Center)
+                )
             }
         }
         TextField(
@@ -297,6 +313,59 @@ fun EditPost(navController: NavHostController) {
                 )
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                //ลบโพสต์
+                onClick = {
+                    createClient.deletePost(postId).enqueue(object : Callback<Void> {
+                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                            if (response.isSuccessful) {
+                                Toast.makeText(
+                                    contextForToast,
+                                    "Successfully Delete",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    contextForToast,
+                                    "Fail Delete",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                            Toast.makeText(
+                                contextForToast,
+                                "Error onFailure " + t.message,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
+
+                },
+                colors = ButtonDefaults.buttonColors(Color.Red),
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(50.dp)
+                    .shadow(5.dp),
+                shape = RoundedCornerShape(corner = CornerSize(8.dp))
+
+
+            ) {
+                Text(
+                    text = "Delete Post",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
+                )
+            }
+        }
+
     }
 }
 

@@ -180,6 +180,7 @@ fun ProfileScreen(navController: NavHostController) {
                                     it.user_img,
                                     it.comment_count,
                                     it.like_count,
+                                    it.status,
                                 )
                             )
                         }
@@ -260,7 +261,7 @@ fun ProfileScreen(navController: NavHostController) {
     }
 
 
-    val initialPost = PostClass(0, "", "", 0, Timestamp(0), Timestamp(0),0,"","",0,0)
+    val initialPost = PostClass(0, "", "", 0, Timestamp(0), Timestamp(0),0,"","",0,0,0)
     var postItem by remember { mutableStateOf(initialPost) }
 
     Column(
@@ -504,7 +505,7 @@ fun ProfileScreen(navController: NavHostController) {
                     ),
                     shape = RoundedCornerShape(corner = CornerSize(16.dp)),
                 ) {
-                    var itemClick = PostClass(0, "", "", 0, Timestamp(0),Timestamp(0),0,"","",0,0)
+                    var itemClick = PostClass(0, "", "", 0, Timestamp(0),Timestamp(0),0,"","",0,0,0)
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
@@ -560,6 +561,7 @@ fun ProfileScreen(navController: NavHostController) {
                                                 post.user_img,
                                                 post.comment_count,
                                                 post.like_count,
+                                                post.status,
                                             )
                                         )
                                         navController.navigate(Screen.EditPost.route)
