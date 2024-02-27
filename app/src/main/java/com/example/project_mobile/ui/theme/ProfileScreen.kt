@@ -115,6 +115,7 @@ fun ProfileScreen(navController: NavHostController) {
     val initialLike = LikesClass(0, 0, 0,  Timestamp(0), Timestamp(0), 0)
 
     var likeItem by remember { mutableStateOf(initialLike) }
+    var likeStatus by remember { mutableStateOf(likeItem.status) }
 
 
 
@@ -253,6 +254,22 @@ fun ProfileScreen(navController: NavHostController) {
                             "Error onFailure " + t.message,
                             Toast.LENGTH_LONG
                         ).show()
+                    }
+                })
+
+                createClient.getLike(postId,userId).enqueue(object : Callback<LikesClass> {
+                    override fun onResponse(
+                        call: Call<LikesClass>,
+                        response: Response<LikesClass>
+                    ) {
+                        if (response.isSuccessful) {
+                            likeStatus = response.body()?.status!!
+                        } else {
+                            likeStatus = 0
+                        }
+                    }
+                    override fun onFailure(call: Call<LikesClass>, t: Throwable) {
+                        likeStatus = 0
                     }
                 })
 
@@ -614,6 +631,18 @@ fun ProfileScreen(navController: NavHostController) {
                                             response: Response<LikesClass>
                                         ) {
                                             if (response.isSuccessful) {
+                                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                    "like",
+                                                    LikesClass(
+                                                        likeItem.status,
+                                                        likeItem.user_id,
+                                                        likeItem.post_id,
+                                                        likeItem.create_at,
+                                                        likeItem.update_at,
+                                                        likeItem.delete_at,
+                                                    )
+                                                )
+                                                navController.navigate(Screen2.Profile.route)
 
 
                                             } else {
@@ -636,9 +665,9 @@ fun ProfileScreen(navController: NavHostController) {
                                 }
                             ) {
                                 Icon(
-                                    if (favorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                    if (post.status == 1) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                     contentDescription = "Like",
-                                    tint = if (favorite) Color.Red else Color.Gray
+                                    tint = if (post.status == 1) Color.Red else Color.Gray
                                 )
 
                             }

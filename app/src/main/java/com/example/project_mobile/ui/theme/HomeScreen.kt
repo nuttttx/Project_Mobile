@@ -142,7 +142,6 @@ fun HomeScreen(navController: NavHostController) {
             Lifecycle.State.STARTED -> {}
             Lifecycle.State.RESUMED -> {
                 getPosts()
-
                 createClient.likePost(postId,userId).enqueue(object : Callback<LikesClass> {
                     override fun onResponse(
                         call: Call<LikesClass>,
@@ -376,9 +375,6 @@ fun HomeScreen(navController: NavHostController) {
                                 }
                             ) {
                                 Icon(
-//                                    if (favorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-//                                    contentDescription = "Like",
-//                                    tint = if (favorite) Color.Red else Color.Gray
                                     if (post.status == 1) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                     contentDescription = "Like",
                                     tint = if (post.status == 1) Color.Red else Color.Gray
@@ -573,8 +569,6 @@ fun HomeScreen(navController: NavHostController) {
                                     }
                                 )
                             }
-
-
                         }
                     }
                 }
