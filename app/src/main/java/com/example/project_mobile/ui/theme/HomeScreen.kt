@@ -86,6 +86,8 @@ fun HomeScreen(navController: NavHostController) {
 
     var commentItemsList = remember { mutableStateListOf<CommentClass>() }
 
+    var status by remember { mutableStateOf(0) }
+
 
 
     lateinit var sharedPreferences: SharedPreferencesManager
@@ -131,7 +133,6 @@ fun HomeScreen(navController: NavHostController) {
                                 )
                             }
                     }
-
                     override fun onFailure(call: Call<List<PostClass>>, t: Throwable) {
                         Toast.makeText(
                             contextForToast,
@@ -172,11 +173,26 @@ fun HomeScreen(navController: NavHostController) {
                         ).show()
                     }
                 })
-                Toast.makeText(
-                    contextForToast,
-                    "${likeItem.status}",
-                    Toast.LENGTH_LONG
-                ).show()
+
+//                createClient.getLike(userId, postId).enqueue(object : Callback<LikesClass> {
+//                    override fun onResponse(call: Call<LikesClass>, response: Response<LikesClass>) {
+//                        if (response.isSuccessful) {
+//                            val statusResponse = response.body()
+//                            statusResponse?.let {
+//                                status = it.status
+//                            }
+//                        }
+//                    }
+//
+//                    override fun onFailure(call: Call<LikesClass>, t: Throwable) {
+//                        // รายละเอียดการจัดการเมื่อเกิดข้อผิดพลาด
+//                    }
+//                })
+//                Toast.makeText(
+//                    contextForToast,
+//                    "${status}",
+//                    Toast.LENGTH_LONG
+//                ).show()
 
             }
         }
@@ -208,7 +224,7 @@ fun HomeScreen(navController: NavHostController) {
             Button(
                 onClick = {
                     // Perform search
-                    navController.navigate(Search.SearchAccout.route)
+                    navController.navigate(Search.SearchAccount.route)
                 },
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
                 modifier = Modifier
@@ -330,7 +346,7 @@ fun HomeScreen(navController: NavHostController) {
                                             response: Response<LikesClass>
                                         ) {
                                             if (response.isSuccessful) {
-                                                favorite = !favorite
+
 
                                             } else {
                                                 Toast.makeText(
@@ -349,6 +365,7 @@ fun HomeScreen(navController: NavHostController) {
                                         }
                                     })
 
+
                                 }
                             ) {
 
@@ -356,9 +373,9 @@ fun HomeScreen(navController: NavHostController) {
 //                                    if (favorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
 //                                    contentDescription = "Like",
 //                                    tint = if (favorite) Color.Red else Color.Gray
-                                    if (likeItem.status == 1) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                    if (status == 1) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                     contentDescription = "Like",
-                                    tint = if (likeItem.status == 1 ) Color.Red else Color.Gray
+                                    tint = if (status == 1 ) Color.Red else Color.Gray
                                 )
 
                             }

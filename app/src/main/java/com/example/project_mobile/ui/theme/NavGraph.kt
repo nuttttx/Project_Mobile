@@ -35,6 +35,11 @@ fun NavGraph(navController: NavHostController) {
         ) {
             FriendScreen(navController)
         }
+        composable(
+            route = Screen.RequestsFriend.route
+        ) {
+            RequestsFriend(navController)
+        }
 
 //        composable(
 //            route = Screen.Add.route) {
@@ -49,7 +54,7 @@ fun NavGraph(navController: NavHostController) {
             SearchFriend(navController)
         }
         composable(
-            route = Search.SearchAccout.route) {
+            route = Search.SearchAccount.route) {
             SearchAccount(navController)
         }
 

@@ -5,6 +5,8 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -35,16 +37,10 @@ interface ChitChatAPI {
         @Path("password") password: String
     ): Call<LoginClass>
 
-//    @GET("search/{user_name}")
-//    fun searchUser(
-//        @Path("user_name") user_name: String
-//    ): Call<List<LoginClass>>
-
     @GET("search/{user_name}")
     fun searchUser(
         @Path("user_name") user_name: String
     ): Call<AllUserClass>
-
 //    ทุกโพสต์
     @GET("posts/{user_id}")
     fun getPosts(
@@ -124,6 +120,51 @@ interface ChitChatAPI {
         @Field("post_id") postId: Int,
         @Field("user_id") userId: Int
     ): Call<LikesClass>
+
+    @GET("getlike/:user_id/:post_id")
+    fun getLike(
+        @Path("user_id") userId: Int,
+        @Path("post_id") postId: Int
+    ): Call<LikesClass>
+
+
+//    FANG
+//=======================================================================================================================================================================================================================
+
+    @GET("search/{user_name}")
+    fun searchFriend(
+        @Path("user_name") user_name: String
+    ): Call<FriendClass>
+    //ส่งคำขอเป็นเพื่อน
+    @POST("friend-request")
+    fun sendFriendRequest(
+        @Body request: FriendRequestData
+    ): Call<FriendRequestClass>
+    //แสดงคำขอเป็นเพื่อน
+    @GET("/friend-requests/{user_id}")
+    fun getFriendRequests
+                (@Path("user_id") userId: Int
+    ): Call<List<FriendClass>>
+    //ยอมรับเป็นเพื่อน
+    @PUT("friend-request/accept/{request_id}")
+    fun acceptFriendRequest(
+        @Path("request_id") requestId: Int
+    ): Call<Void>
+    //ลบคำขอเป็นเพื่อน
+    @DELETE("/friend-request/{request_id}")
+    fun deleteFriendRequest(
+        @Path("request_id") requestId: Int
+    ): Call<Void>
+    //แสดงรายการเพื่อน
+    @GET("/friend/{user_id}")
+    fun getFriend(
+        @Path("user_id") userId: Int
+    ): Call<List<FriendClass>>
+    //ลบเพื่อน
+    @PUT("/friends/{request_id}")
+    fun deleteFriend
+                (@Path("request_id") requestId: Int
+    ): Call<Void>
 
 
 

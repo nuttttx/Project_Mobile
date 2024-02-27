@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 
-
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -71,25 +70,19 @@ import retrofit2.Response
 import java.sql.Timestamp
 
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAccount(navController: NavHostController){
     var userName by remember { mutableStateOf("") }
-
-
     lateinit var sharedPreferences: SharedPreferencesManager
-    val contextForToast = LocalContext.current.applicationContext
+    var contextForToast = LocalContext.current.applicationContext
     sharedPreferences = SharedPreferencesManager(contextForToast)
-    val userId = sharedPreferences.userId ?: 0
+    var userId = sharedPreferences.userId ?: 0
+//    var userId by remember { mutableStateOf(sharedPreferences.userId ?: 0) }
     val createClient = ChitChatAPI.create()
 
-
     var userItemsList = remember { mutableStateListOf<AllUserClass>() }
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
-    // ... (rest of your code remains the same)
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -136,28 +129,27 @@ fun SearchAccount(navController: NavHostController){
                             response: Response<AllUserClass>
                         ) {
                             if (response.isSuccessful) {
-                                val user = response.body()
+                                var user = response.body()
                                 if (user != null) {
                                     // Check if the searched user is the logged-in user
                                     if (user.user_id != userId) {
                                         // Clear the list and add the found user
                                         userItemsList.clear()
                                         userItemsList.add(user)
-                                        Toast.makeText(contextForToast, "User Found", Toast.LENGTH_LONG).show()
+                                        Toast.makeText(contextForToast, "เจอผู้ใช้", Toast.LENGTH_SHORT).show()
                                     } else {
-                                        Toast.makeText(contextForToast, "Cannot search for logged-in user", Toast.LENGTH_LONG).show()
+                                        Toast.makeText(contextForToast, " ", Toast.LENGTH_SHORT).show()
                                     }
                                 } else {
-                                    Toast.makeText(contextForToast, "User Not Found", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(contextForToast, "ไม่เจอผู้ใช้", Toast.LENGTH_SHORT).show()
                                 }
                             } else {
-                                Toast.makeText(contextForToast, "Error: ${response.code()}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(contextForToast, "ส่งคำขอแล้ว: ${response.code()}", Toast.LENGTH_SHORT).show()
                             }
                         }
 
-
                         override fun onFailure(call: Call<AllUserClass>, t: Throwable) {
-                            Toast.makeText(contextForToast, "Error onFailure: ${t.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(contextForToast, "Error onFailure: ${t.message}", Toast.LENGTH_SHORT).show()
                         }
                     })
                 })
@@ -210,25 +202,18 @@ fun SearchAccount(navController: NavHostController){
                             )
                         }
 
-
                         Spacer(modifier = Modifier.width(16.dp))
 
-
                         // Text content
-                        Column {
+                        Column  {
                             Text(
                                 text = "${item.user_name}",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black
                             )
-//                            Text(
-//                                text = "Email: ${item.img}",
-//                                fontSize = 14.sp,
-//                                color = Color.Gray
-//                            )
                             Text(
-                                text = "Gender: ${item.gender}",
+                                text = "เพศ: ${item.gender}",
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -236,7 +221,38 @@ fun SearchAccount(navController: NavHostController){
                         Spacer(modifier = Modifier.width(50.dp))
                         Button(
                             onClick = {
-//                                sendFriendRequest()
+
+                                if (userItemsList.isNotEmpty()) {
+                                    // ตรวจสอบว่ามีผู้ใช้ที่ค้นหาเจอแล้ว
+                                    val friendToRequest = userItemsList.first() // เราเลือกเพิ่มเพื่อนแค่คนแรกในรายการ
+
+                                    // สร้าง request โดยให้ sendUserId เป็น userId ของผู้ที่ login อยู่
+                                    // และ receiveUserId เป็น userId ของเพื่อนที่ต้องการจะส่งคำขอ
+                                    val request = FriendRequestData(sendUserId = userId, receiveUserId = friendToRequest.user_id )
+
+                                    createClient.sendFriendRequest(request).enqueue(object : Callback<FriendRequestClass> {
+                                        override fun onResponse(
+                                            call: Call<FriendRequestClass>,
+                                            response: Response<FriendRequestClass>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                // ทำงานเมื่อคำขอถูกต้อง
+                                                val friendRequest = response.body()
+                                                if (friendRequest != null) {
+                                                    Toast.makeText(contextForToast, "ส่งคำขอสำเร็จ", Toast.LENGTH_LONG).show()
+                                                }
+                                            } else {
+                                                Toast.makeText(contextForToast, "ผิดพลาด: ${response.code()}", Toast.LENGTH_LONG).show()
+                                            }
+                                        }
+
+                                        override fun onFailure(call: Call<FriendRequestClass>, t: Throwable) {
+                                            Toast.makeText(contextForToast, "Error onFailure: ${t.message}", Toast.LENGTH_LONG).show()
+                                        }
+                                    })
+                                } else {
+                                    Toast.makeText(contextForToast, "กรุณาค้นหาผู้ใช้ก่อน", Toast.LENGTH_LONG).show()
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(Color(248, 222, 248, 255)),
                             modifier = Modifier
@@ -259,13 +275,3 @@ fun SearchAccount(navController: NavHostController){
         }
     }
 }
-
-
-
-
-
-
-
-
-
-

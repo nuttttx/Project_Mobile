@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import java.sql.Timestamp
 
+//Nut
 @Parcelize
 class FriendsClass (
     val user_id: Int,

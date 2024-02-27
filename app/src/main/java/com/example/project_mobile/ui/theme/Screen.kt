@@ -18,5 +18,9 @@ sealed class Screen (val route: String, val name: String  ){
     object ImageProfile: Screen(route = "Imageprofile_screen", name="ImageProfile")
     object EditPost: Screen(route = "EditPost", name = "EditPost")
 
+    //Fang
+    object RequestsFriend : Search(route = "requests_friend", name = "คำขอเป็นเพื่อน")
+
+
 
 }
