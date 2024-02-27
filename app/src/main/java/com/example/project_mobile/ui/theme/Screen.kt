@@ -13,6 +13,8 @@ sealed class Screen (val route: String, val name: String  ){
     object Register: Screen(route = "register_screen", name="Register")
     object AllUser: Screen(route = "alluser_screen", name="AllUser")
 //    object Profile: Screen(route = "profile_screen", name="Profile")
+
+    object RequestsFriend : Search(route = "requests_friend", name = "คำขอเป็นเพื่อน")
     object Profile: Screen(route = "profile_screen", name="Profile")
     object EditProfile: Screen(route = "editprofile_screen", name="EditProfile")
     object ImageProfile: Screen(route = "Imageprofile_screen", name="ImageProfile")

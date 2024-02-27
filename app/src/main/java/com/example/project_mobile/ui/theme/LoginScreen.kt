@@ -55,6 +55,7 @@ import androidx.compose.ui.text.input.ImeAction
 @Composable
 fun LoginScreen(navController: NavHostController) {
     var userEmail by remember { mutableStateOf("") }
+    var userId by remember { mutableStateOf(-1) }
     var password by remember { mutableStateOf("") }
     var isButtonEnabled by remember { mutableStateOf(true) }
 
@@ -163,6 +164,7 @@ fun LoginScreen(navController: NavHostController) {
                                     if (response.body()?.success == 1) {
                                         sharedPreferences.isLoggedIn = true
                                         sharedPreferences.userEmail = response.body()?.email ?: ""
+                                        sharedPreferences.userId = response.body()?.user_id
                                         Toast.makeText(
                                             contextForToast,
                                             "Login successful",
@@ -269,8 +271,6 @@ fun LoginScreen(navController: NavHostController) {
         }
     }
 }
-
-
 
 
 

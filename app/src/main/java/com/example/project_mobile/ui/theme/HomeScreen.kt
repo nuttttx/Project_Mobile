@@ -103,7 +103,7 @@ fun HomeScreen(navController: NavHostController) {
             Button(
                 onClick = {
                     // Perform search
-                    navController.navigate(Search.SearchFriend.route)
+                    navController.navigate(Search.SearchAccout.route)
                 },
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
                 modifier = Modifier
@@ -113,19 +113,12 @@ fun HomeScreen(navController: NavHostController) {
             }
         }
 
-
-
-
-
         // Divider line between "Chit Chat" and LazyColumn
         Divider(
             color = Color.LightGray,
             thickness = 1.dp,
             modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)
         )
-
-
-
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),

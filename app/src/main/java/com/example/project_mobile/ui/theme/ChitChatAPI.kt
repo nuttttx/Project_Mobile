@@ -2,11 +2,15 @@ package com.example.project_mobile.ui.theme
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ChitChatAPI {
 
@@ -24,6 +28,16 @@ interface ChitChatAPI {
         @Path("user_name") user_name: String
     ): Call<AllUserClass>
 
+    @GET("search/{user_name}")
+    fun searchFriend(
+        @Path("user_name") user_name: String
+    ): Call<FriendClass>
+
+//    @GET("search/{user_name}")
+//    fun searchUser(
+//        @Path("user_name") user_name: String
+//    ): Call<List<AllUserClass>>
+
     @FormUrlEncoded
     @POST("insertAccount")
     fun registerUser(
@@ -31,8 +45,42 @@ interface ChitChatAPI {
         @Field("email") email: String,
         @Field("password") password: String,
         @Field("img") img: String,
-        @Field("gender") gender: String
+        @Field("gender") gender: String,
     ): Call<LoginClass>
+
+    //ส่งคำขอเป็นเพื่อน
+    @POST("friend-request")
+    fun sendFriendRequest(
+        @Body request: FriendRequestData
+    ): Call<FriendRequestClass>
+
+    //แสดงคำขอเป็นเพื่อน
+    @GET("/friend-requests/{user_id}")
+    fun getFriendRequests
+        (@Path("user_id") userId: Int
+    ): Call<List<FriendClass>>
+
+    //ยอมรับเป็นเพื่อน
+    @PUT("friend-request/accept/{request_id}")
+    fun acceptFriendRequest(
+        @Path("request_id") requestId: Int
+    ): Call<Void>
+    //ลบคำขอเป็นเพื่อน
+    @DELETE("/friend-request/{request_id}")
+    fun deleteFriendRequest(
+        @Path("request_id") requestId: Int
+    ): Call<Void>
+    //แสดงรายการเพื่อน
+    @GET("/friends/{user_id}")
+    fun getFriends
+        (@Path("user_id") userId: Int
+    ): Call<List<FriendClass>>
+
+    //ลบเพื่อน
+    @PUT("/friends/{request_id}")
+    fun deleteFriend
+        (@Path("request_id") requestId: Int
+    ): Call<Void>
 
     companion object {
         fun create(): ChitChatAPI {
