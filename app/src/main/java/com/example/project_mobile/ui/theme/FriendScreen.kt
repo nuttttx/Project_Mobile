@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -171,7 +172,10 @@ fun FriendScreen(navController: NavHostController) {
             }
         }
         LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 90.dp),
+
         ) {
             itemsIndexed(
                 items = friendItemsList.toList()
@@ -201,7 +205,13 @@ fun FriendScreen(navController: NavHostController) {
                                 .size(80.dp) // Adjust size as needed
                                 .clip(CircleShape)
                                 .background(Color.Gray) // Placeholder color
-                        )
+                        ){
+                            Image(
+                                painter = rememberAsyncImagePainter(item.img), // เปลี่ยนเป็นรูปภาพที่ต้องการ
+                                contentDescription = "Post Image",
+//
+                            )
+                        }
                         Spacer(modifier = Modifier.width(16.dp))
                         // Text content
                         Column (

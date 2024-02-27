@@ -41,14 +41,7 @@ fun NavGraph(navController: NavHostController) {
             RequestsFriend(navController)
         }
 
-//        composable(
-//            route = Screen.Add.route) {
-//            AddScreen()
-//        }
-        composable(
-            route = Screen2.Notification.route) {
-            NotificationScreen(navController)
-        }
+
         composable(
             route = Search.SearchFriend.route) {
             SearchFriend(navController)

@@ -30,7 +30,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 @Composable
 fun MyBottomBar(navController: NavHostController, contextForToast: Context) {
-    val navigationItems = listOf(Screen2.Home, Screen2.Friend, Screen2.AddPost, Screen2.Notification, Screen2.Profile)
+    val navigationItems = listOf(Screen2.Home, Screen2.Friend, Screen2.AddPost, Screen2.Profile)
     var selectedScreen by remember { mutableStateOf(0) }
     NavigationBar {
         Row(
