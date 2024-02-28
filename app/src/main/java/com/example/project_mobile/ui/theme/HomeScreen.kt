@@ -442,7 +442,7 @@ fun HomeScreen(navController: NavHostController) {
                                 AlertDialog(
                                     onDismissRequest = { commentDialog = false },
                                     title = {
-                                        Text("ความคิดเห็นทั้งหมด")
+                                        Text("All Comments")
                                     },
                                     text = {
                                         Spacer(modifier = Modifier.height(80.dp))
@@ -524,7 +524,7 @@ fun HomeScreen(navController: NavHostController) {
                                                     .padding(16.dp),
                                                 value = newComment,
                                                 onValueChange = { newComment = it },
-                                                label = { Text("แสดงความคิดเห็น") },
+                                                label = { Text("Write a Comment") },
                                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                                     focusedBorderColor = Color(130, 0, 131, 255),
                                                     unfocusedBorderColor = Color(130, 0, 131, 255),
@@ -563,7 +563,7 @@ fun HomeScreen(navController: NavHostController) {
                                                     .height(50.dp)
                                                     .align(Alignment.CenterHorizontally)
                                             ) {
-                                                Text("เพิ่มความคิดเห็น")
+                                                Text("Send Comment")
                                             }
                                         }
                                     }

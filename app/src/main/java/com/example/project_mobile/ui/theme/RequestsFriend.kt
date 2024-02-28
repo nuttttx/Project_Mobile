@@ -115,10 +115,10 @@ fun RequestsFriend (navController: NavHostController) {
 
             Spacer(modifier = Modifier.width(20.dp))
             Text(
-                text = "คำขอเป็นเพื่อน",
+                text = "Friend Requests",
                 textAlign = TextAlign.Start, // Align text to the center horizontally
                 style = TextStyle(
-                    fontSize = 35.sp,
+                    fontSize = 25.sp,
                     fontWeight = FontWeight.Medium
                 ),
                 modifier = Modifier
@@ -183,7 +183,7 @@ fun RequestsFriend (navController: NavHostController) {
                                 color = Color.Black
                             )
                             Text(
-                                text = "เพศ : ${item.gender}",
+                                text = "Gender : ${item.gender}",
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )

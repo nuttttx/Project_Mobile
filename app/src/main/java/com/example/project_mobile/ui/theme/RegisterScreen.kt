@@ -310,7 +310,7 @@ fun MyRadioGroup(
 
 @Composable
 fun RadioGroupUsage(): String {
-    val kinds = listOf("ชาย", "หญิง", "อื่นๆ")
+    val kinds = listOf("Male", "Female", "Other")
     var (selected, setSelected) = remember { mutableStateOf("") }
 
 

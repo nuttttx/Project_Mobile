@@ -116,7 +116,7 @@ fun FriendScreen(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically // Align content to the center vertically
         ) {
             Text(
-                text = "เพื่อน",
+                text = "Friends",
                 textAlign = TextAlign.Start, // Align text to the center horizontally
                 style = TextStyle(
                     fontSize = 35.sp,
@@ -162,7 +162,7 @@ fun FriendScreen(navController: NavHostController) {
                     .padding(start = 8.dp)
             ) {
                 Text(
-                    text = "คำขอเป็นเพื่อน",
+                    text = "Friend Requests",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -226,7 +226,7 @@ fun FriendScreen(navController: NavHostController) {
                                 color = Color.Black
                             )
                             Text(
-                                text = "เพศ : ${item.gender}",
+                                text = "Gender : ${item.gender}",
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -243,7 +243,7 @@ fun FriendScreen(navController: NavHostController) {
                             modifier = Modifier.padding(4.dp)
                         ) {
                             Text(
-                                text = "ลบออก",
+                                text = "Delete",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,

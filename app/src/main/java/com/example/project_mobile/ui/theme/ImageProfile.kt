@@ -121,7 +121,7 @@ fun ImageProfile(navController: NavHostController) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
             }
             Text(
-                text = "แก้ไขโปรไฟล์",
+                text = "Edit Profile",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -187,7 +187,7 @@ fun ImageProfile(navController: NavHostController) {
                 },
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
             ) {
-                Text("เปิดคลังรูปภาพ")
+                Text("Open Gallery")
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -258,7 +258,7 @@ fun ImageProfile(navController: NavHostController) {
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
 
             ) {
-                Text("บันทึก")
+                Text("Save")
             }
         }
     }

@@ -106,7 +106,7 @@ fun SearchAccount(navController: NavHostController){
                 onValueChange = { newUserName ->
                     userName = newUserName
                 },
-                label = { Text(text = "ค้นหาบัญชีผู้ใช้",) },
+                label = { Text(text = "Search",) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color(130, 0, 131, 255),
                     unfocusedBorderColor = Color(130, 0, 131, 255),
@@ -210,7 +210,7 @@ fun SearchAccount(navController: NavHostController){
                                 color = Color.Black
                             )
                             Text(
-                                text = "เพศ: ${item.gender}",
+                                text = "Gender: ${item.gender}",
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -258,7 +258,7 @@ fun SearchAccount(navController: NavHostController){
                                 .width(106.dp)
                         ) {
                             Text(
-                                text = "เพิ่มเพื่อน",
+                                text = "Add Friend",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,

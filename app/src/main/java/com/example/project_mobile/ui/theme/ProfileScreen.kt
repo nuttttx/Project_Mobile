@@ -293,7 +293,7 @@ fun ProfileScreen(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "โปรไฟล์",
+                text = "Profile",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
@@ -449,7 +449,7 @@ fun ProfileScreen(navController: NavHostController) {
                                 color = Color.Black
                             )
                             Text(
-                                text = "โพสต์",
+                                text = "Post",
                                 fontSize = 20.sp,
                                 color = Color.Black
                             )
@@ -464,7 +464,7 @@ fun ProfileScreen(navController: NavHostController) {
                                 color = Color.Black
                             )
                             Text(
-                                text = "เพื่อน",
+                                text = "Friends",
                                 fontSize = 20.sp,
                                 color = Color.Black
                             )
@@ -491,7 +491,7 @@ fun ProfileScreen(navController: NavHostController) {
                         },
                         colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
                     ) {
-                        Text(text = "แก้ไขโปรไฟล์")
+                        Text(text = "Edit Profile")
                     }
                 }
             }
@@ -732,7 +732,7 @@ fun ProfileScreen(navController: NavHostController) {
                                 AlertDialog(
                                     onDismissRequest = { commentDialog = false },
                                     title = {
-                                        Text("ความคิดเห็นทั้งหมด")
+                                        Text("All Comments")
                                     },
                                     text = {
                                         Spacer(modifier = Modifier.height(80.dp))
@@ -815,7 +815,7 @@ fun ProfileScreen(navController: NavHostController) {
                                                     .padding(16.dp),
                                                 value = newComment,
                                                 onValueChange = { newComment = it },
-                                                label = { Text("แสดงความคิดเห็น") },
+                                                label = { Text("Write a Comment") },
                                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                                     focusedBorderColor = Color(130, 0, 131, 255),
                                                     unfocusedBorderColor = Color(130, 0, 131, 255),
@@ -854,7 +854,7 @@ fun ProfileScreen(navController: NavHostController) {
                                                     .height(50.dp)
                                                     .align(Alignment.CenterHorizontally)
                                             ) {
-                                                Text("เพิ่มความคิดเห็น")
+                                                Text("Send Comment")
                                             }
                                         }
                                     }

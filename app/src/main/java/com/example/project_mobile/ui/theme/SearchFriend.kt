@@ -126,7 +126,7 @@ fun SearchFriend(navController: NavHostController) {
                 value = friendName,
                 onValueChange = { newFriendName ->
                     friendName = newFriendName },
-                label = { Text(text = "ค้นหาเพื่อน") },
+                label = { Text(text = "Search") },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color(130, 0, 131, 255),
                     unfocusedBorderColor = Color(130, 0, 131, 255),
@@ -227,7 +227,7 @@ fun SearchFriend(navController: NavHostController) {
                                 color = Color.Black
                             )
                             Text(
-                                text = "เพศ : ${item.gender}",
+                                text = "Gender : ${item.gender}",
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -244,7 +244,7 @@ fun SearchFriend(navController: NavHostController) {
                             modifier = Modifier.padding(4.dp)
                         ) {
                             Text(
-                                text = "ลบออก",
+                                text = "Delete",
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,

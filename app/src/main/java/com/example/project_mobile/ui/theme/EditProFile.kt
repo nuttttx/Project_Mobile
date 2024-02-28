@@ -108,7 +108,7 @@ fun EditProfileScreen(navController: NavHostController) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
             }
             Text(
-                text = "แก้ไขโปรไฟล์",
+                text = "Edit Profile",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -181,7 +181,7 @@ fun EditProfileScreen(navController: NavHostController) {
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
-                    text = "แก้ไขรูป"
+                    text = "Edit Picture"
                 )
             }
 
@@ -191,7 +191,7 @@ fun EditProfileScreen(navController: NavHostController) {
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("ชื่อผู้ใช้") },
+                label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(corner = CornerSize(8.dp)),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -206,7 +206,7 @@ fun EditProfileScreen(navController: NavHostController) {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("อีเมล") },
+                label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(corner = CornerSize(8.dp)),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -221,7 +221,7 @@ fun EditProfileScreen(navController: NavHostController) {
             OutlinedTextField(
                 value = img,
                 onValueChange = { img = it },
-                label = { Text("URL รูปภาพ") },
+                label = { Text("URL Picture") },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = false,
                 shape = RoundedCornerShape(corner = CornerSize(8.dp)),
@@ -259,7 +259,7 @@ fun EditProfileScreen(navController: NavHostController) {
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(Color(130, 0, 131, 255)),
             ) {
-                Text("บันทึก")
+                Text("Save")
             }
         }
     }
@@ -268,7 +268,7 @@ fun EditProfileScreen(navController: NavHostController) {
 
 @Composable
 fun EditRadioGroupUsage(s: String): String {
-    val kinds = listOf("ชาย", "หญิง", "อื่นๆ")
+    val kinds = listOf("Male", "Female", "Other")
     var (selected, setSelected) = remember { mutableStateOf(s) }
 
 
